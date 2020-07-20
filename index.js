@@ -75,6 +75,7 @@ const handlePostbackEvent = async (event) => {
       console.log("-----------> GET STARTED event");
       break;
     default:
+      console.log("---------> Postback Event");
     /**@todo do something here */
   }
 };
