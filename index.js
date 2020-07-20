@@ -1,6 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const axios = require("axios");
+const get_started = require("./src/templates/postbacks/get_started");
 
 const app = express();
 
@@ -51,9 +52,9 @@ app.post("/webhook", (req, res) => {
       // console.log(webhook_event);
 
       if (webhook_event.message && webhook_event.message.text) {
-        handleMessageEvent(webhook_event.message.text);
+        handleMessageEvent(webhook_event);
       } else if (webhook_event.postback) {
-        handlePostbackEvent(webhook_event.postback);
+        handlePostbackEvent(webhook_event);
       }
     });
 
@@ -65,9 +66,12 @@ app.post("/webhook", (req, res) => {
   }
 });
 
-const handleMessageEvent = (postback) => {
-  switch (postback.payload) {
+const handlePostbackEvent = async (event) => {
+  const { first_name } = await getUserPersonalInfo(event.sender.id);
+  switch (event.postback.payload) {
     case "get_started":
+      let message = get_started(first_name);
+      sendMessage(event.sender.id, message);
       console.log("-----------> GET STARTED event");
       break;
     default:
@@ -75,8 +79,37 @@ const handleMessageEvent = (postback) => {
   }
 };
 
-const handlePostbackEvent = () => {
-  console.log("Post back event");
+const handleMessageEvent = () => {
+  console.log("Message back event");
 };
+
+async function getUserPersonalInfo(recipientId) {
+  const res = await axios.get(
+    `https://graph.facebook.com/${recipientId}?fields=first_name,last_name&access_token=${process.env.ACCESS_TOKEN}`
+  );
+  const { first_name, last_name } = res.data;
+  return { first_name, last_name };
+}
+
+// generic function sending messages
+function sendMessage(recipientId, message) {
+  axios.post(
+    "https://graph.facebook.com/v7.0/me/messages",
+    {
+      recipient: { id: recipientId },
+      message: message,
+    },
+    {
+      params: {
+        access_token: process.env.ACCESS_TOKEN,
+      },
+    },
+    (err) => {
+      if (err) {
+        console.log("Error sending message: ", err);
+      }
+    }
+  );
+}
 
 app.listen(PORT, () => console.log("webhook is listening"));
