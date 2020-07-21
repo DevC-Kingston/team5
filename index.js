@@ -10,6 +10,8 @@ app.use(bodyParser.json());
 
 const PORT = process.env.PORT || 5000;
 
+app.listen(PORT, () => console.log("webhook is listening"));
+
 app.get("/", (req, res) => {
   res.send("Hi I am a chatbot!!");
 });
@@ -73,7 +75,14 @@ const handlePostbackEvent = async (event) => {
       let message = get_started(first_name);
       sendMessage(event.sender.id, message);
       console.log("-----------> GET STARTED event");
-      break;
+    break;
+
+    case "item_search":
+      let message = item_search();
+      sendMessage(event.sender.id, message);
+      console.log("-----------> Item search postback event");
+    break;
+
     default:
       console.log("---------> Postback Event");
     /**@todo do something here */
@@ -85,25 +94,23 @@ const handleMessageEvent = () => {
 };
 
 async function getUserPersonalInfo(recipientId) {
-  const res = await axios.get(
+  const response = await axios.get(
     `https://graph.facebook.com/${recipientId}?fields=first_name,last_name&access_token=${process.env.ACCESS_TOKEN}`
   );
-  const { first_name, last_name } = res.data;
+  const { first_name, last_name } = response.data;
   return { first_name, last_name };
 }
 
 // generic function sending messages
 function sendMessage(recipientId, message) {
-  axios.post(
-    "https://graph.facebook.com/v7.0/me/messages",
+  axios.post("https://graph.facebook.com/v7.0/me/messages",
     {
       recipient: { id: recipientId },
-      message: message,
+      message: message
     },
     {
-      params: {
-        access_token: process.env.ACCESS_TOKEN,
-      },
+      params: {access_token: process.env.ACCESS_TOKEN}
+      
     },
     (err) => {
       if (err) {
@@ -113,4 +120,4 @@ function sendMessage(recipientId, message) {
   );
 }
 
-app.listen(PORT, () => console.log("webhook is listening"));
+

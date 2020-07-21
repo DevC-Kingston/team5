@@ -21,8 +21,8 @@ function get_started(first_name) {
               },
               {
                 type: "postback",
-                title: "Speak to an Agent",
-                payload: "agent",
+                title: "Looking for an item?",
+                payload: "item_search",
               },
             ],
           },
