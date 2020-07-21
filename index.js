@@ -1,8 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const axios = require("axios");
-const get_started = require("./src/postbacks/templates/get_started");
-const item_search = require("./src/postbacks/templates/item_search");
+const { get_started, item_search } = require("./src/templates/postbacks");
 
 const app = express();
 
@@ -76,13 +75,13 @@ const handlePostbackEvent = async (event) => {
       let message = get_started(first_name);
       sendMessage(event.sender.id, message);
       console.log("-----------> GET STARTED event");
-    break;
+      break;
 
     case "item_search":
-      let itemSearchMessage = item_search();//cant declare variable twice cause variable is 'case' scoped
+      let itemSearchMessage = item_search(); //cant declare variable twice cause variable is 'case' scoped
       sendMessage(event.sender.id, itemSearchMessage);
       console.log("-----------> Item search postback event");
-    break;
+      break;
 
     default:
       console.log("---------> Postback Event");
@@ -110,11 +109,10 @@ function sendMessage(recipientId, message) {
     axios.post("https://graph.facebook.com/v7.0/me/messages",
       {
         recipient: { id: recipientId },
-        message: message
+        message: message,
       },
       {
-        params: {access_token: process.env.ACCESS_TOKEN}
-        
+        params: { access_token: process.env.ACCESS_TOKEN },
       },
       (err) => {
         if (err) {
@@ -125,9 +123,5 @@ function sendMessage(recipientId, message) {
   } catch (error) {
     console.log("#####  ERROR SENDING MESSAGE  #####");
     console.log(error.response.status);
-
   }
-  
 }
-
-
