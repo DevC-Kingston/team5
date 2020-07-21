@@ -68,13 +68,15 @@ app.post("/webhook", (req, res) => {
   }
 });
 
-let itemPostbackFlag = false;
+let itemPostbackFlag;
 
 const handlePostbackEvent = async (event) => {
   const { first_name } = await getUserPersonalInfo(event.sender.id);
+  
   switch (event.postback.payload) {
 
     case "get_started":
+      itemPostbackFlag = false
       let message = get_started(first_name);
       sendMessage(event.sender.id, message);
       console.log("-----------> GET STARTED event");
@@ -82,21 +84,24 @@ const handlePostbackEvent = async (event) => {
 
     case "item_search":
       itemPostbackFlag = true;
-      let itemSearchMessage = item_search(); //cant declare variable twice cause variable is 'case' scoped
-      sendMessage(event.sender.id, itemSearchMessage);
+      message = item_search(); //cant declare variable twice cause variable is 'case' scoped
+      sendMessage(event.sender.id, message);
       console.log("-----------> Item search postback event");
       break;
 
     case "food_search":
-      sendMessage(event.sender.id, "Please enter the name of the food or ingredient you are searching for");
+      message = "Please enter the name of the food or ingredient you are searching for";
+      sendMessage(event.sender.id, message);
       break;
     
     case "machine_search":
-      sendMessage(event.sender.id, "Please enter the name of the appliance or machinery you are searching for");
+      message = "Please enter the name of the appliance or machinery you are searching for";
+      sendMessage(event.sender.id, message);
       break;
     
     case "fashion_search":
-      sendMessage(event.sender.id, "Please enter the name of the clothing item you are searching for");
+      message = "Please enter the name of the clothing item you are searching for";
+      sendMessage(event.sender.id, message);
       //maybe accept a picture for this and search similar options?
       break;
 
@@ -124,14 +129,13 @@ async function getUserPersonalInfo(recipientId) {
 // generic function sending messages
 function sendMessage(recipientId, message) {
   console.log(`----------> ID: ${recipientId}`);
-  
   try{
     
     axios.post(
       "https://graph.facebook.com/v7.0/me/messages",
       {
         recipient: { id: recipientId },
-        message: message,
+        message: message
       },
       {
         params: { access_token: process.env.ACCESS_TOKEN },
