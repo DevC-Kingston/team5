@@ -120,12 +120,13 @@ function sendMessage(recipientId, message) {
           console.log("Error sending message: ", err);
         }
       }
+    );
   } catch (error) {
     console.log("#####  ERROR SENDING MESSAGE  #####");
     console.log(error.response.status);
 
   }
-  );
+  
 }
 
 
