@@ -21,8 +21,8 @@ function item_search() {
               },
               {
                 type: "postback",
-                title: "Clothes/Fashion 👔👗",
-                payload: "item_search",
+                title: "Clothes/Fashion 👔👘",
+                payload: "fashion_search",
               },
             ],
           },
