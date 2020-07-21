@@ -41,7 +41,7 @@ app.get("/webhook", (req, res) => {
 });
 
 // Creates the endpoint for our webhook
-app.post("/webhook", (req, res) => {
+app.post("/webhook", async (req, res) => {
   let body = req.body;
 
   // Checks this is an event from a page subscription
@@ -56,7 +56,10 @@ app.post("/webhook", (req, res) => {
       if (webhook_event.message && webhook_event.message.text) {
         handleMessageEvent(webhook_event);
       } else if (webhook_event.postback) {
-        handlePostbackEvent(webhook_event);
+        let payload = await handlePostbackEvent(webhook_event);
+        if(payload="food_search"){
+          console.log(`text received from ${payload}`);
+        }
       }
     });
 
@@ -110,6 +113,7 @@ const handlePostbackEvent = async (event) => {
       console.log("---------> Postback Event");
     /**@todo do something here */
   }
+  return event.postback.payload;
 };
 
 const handleMessageEvent = (event) => { 
@@ -148,4 +152,6 @@ function sendMessage(recipientId, message) {
     console.log("#####  ERROR SENDING MESSAGE  #####");
     console.log(error.response.status);
   }
+
+  return;
 }
