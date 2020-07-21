@@ -68,7 +68,7 @@ app.post("/webhook", (req, res) => {
   }
 });
 
-const itemPostbackFlag = false;
+let itemPostbackFlag = false;
 
 const handlePostbackEvent = async (event) => {
   const { first_name } = await getUserPersonalInfo(event.sender.id);
