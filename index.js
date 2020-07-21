@@ -1,8 +1,8 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const axios = require("axios");
-const get_started = require("./src/templates/postbacks/get_started");
-const item_search = require("./src/templates/postbacks/item_search");
+const get_started = require("./src/postbacks/templates/get_started");
+const item_search = require("./src/postbacks/templates/item_search");
 
 const app = express();
 
