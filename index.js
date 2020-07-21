@@ -104,8 +104,9 @@ async function getUserPersonalInfo(recipientId) {
 // generic function sending messages
 function sendMessage(recipientId, message) {
 
+  console.log(`----------> ID: ${recipientId}`);
+
   try{
-    console.log(`----------> ID: ${recipientId}`);
     axios.post("https://graph.facebook.com/v7.0/me/messages",
       {
         recipient: { id: recipientId },
