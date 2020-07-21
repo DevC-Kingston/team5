@@ -98,14 +98,15 @@ async function getUserPersonalInfo(recipientId) {
   const response = await axios.get(
     `https://graph.facebook.com/${recipientId}?fields=first_name,last_name&access_token=${process.env.ACCESS_TOKEN}`
   );
-  const { first_name, last_name } = response.data;
-  return { first_name, last_name };
+  const {first_name, last_name} = response.data;
+  return {first_name, last_name};
 }
 
 // generic function sending messages
 function sendMessage(recipientId, message) {
 
   try{
+    console.log(`----------> ID: ${recipientId}`)
     axios.post("https://graph.facebook.com/v7.0/me/messages",
       {
         recipient: { id: recipientId },
