@@ -106,7 +106,7 @@ async function getUserPersonalInfo(recipientId) {
 function sendMessage(recipientId, message) {
 
   try{
-    console.log(`----------> ID: ${recipientId}`)
+    console.log(`----------> ID: ${recipientId}`);
     axios.post("https://graph.facebook.com/v7.0/me/messages",
       {
         recipient: { id: recipientId },
