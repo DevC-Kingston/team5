@@ -91,17 +91,17 @@ const handlePostbackEvent = async (event) => {
       break;
 
     case "food_search":
-      message = "Please enter the name of the food or ingredient you are searching for";
+      message = {text: "Please enter the name of the food or ingredient you are searching for"};
       sendMessage(event.sender.id, message);
       break;
     
     case "machine_search":
-      message = "Please enter the name of the appliance or machinery you are searching for";
+      message = {text: "Please enter the name of the appliance or machinery you are searching for"};
       sendMessage(event.sender.id, message);
       break;
     
     case "fashion_search":
-      message = "Please enter the name of the clothing item you are searching for";
+      message = {text: "Please enter the name of the clothing item you are searching for"};
       sendMessage(event.sender.id, message);
       //maybe accept a picture for this and search similar options?
       break;
@@ -131,12 +131,11 @@ async function getUserPersonalInfo(recipientId) {
 function sendMessage(recipientId, message) {
   console.log(`----------> ID: ${recipientId}`);
   try{
-    
     axios.post(
       "https://graph.facebook.com/v7.0/me/messages",
       {
         recipient: { id: recipientId },
-        message: message
+        message: message,
       },
       {
         params: { access_token: process.env.ACCESS_TOKEN },
