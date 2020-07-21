@@ -79,8 +79,8 @@ const handlePostbackEvent = async (event) => {
     break;
 
     case "item_search":
-      //let message = item_search();// cant declare variable twice cause varibale is 'case' scoped
-      sendMessage(event.sender.id, item_search());
+      let itemSearchMessage = item_search();//cant declare variable twice cause variable is 'case' scoped
+      sendMessage(event.sender.id, itemSearchMessage);
       console.log("-----------> Item search postback event");
     break;
 
@@ -104,20 +104,27 @@ async function getUserPersonalInfo(recipientId) {
 
 // generic function sending messages
 function sendMessage(recipientId, message) {
-  axios.post("https://graph.facebook.com/v7.0/me/messages",
-    {
-      recipient: { id: recipientId },
-      message: message
-    },
-    {
-      params: {access_token: process.env.ACCESS_TOKEN}
-      
-    },
-    (err) => {
-      if (err) {
-        console.log("Error sending message: ", err);
+
+  try{
+    axios.post("https://graph.facebook.com/v7.0/me/messages",
+      {
+        recipient: { id: recipientId },
+        message: message
+      },
+      {
+        params: {access_token: process.env.ACCESS_TOKEN}
+        
+      },
+      (err) => {
+        if (err) {
+          console.log("Error sending message: ", err);
+        }
       }
-    }
+  } catch (error) {
+    console.log("#####  ERROR SENDING MESSAGE  #####");
+    console.log(error.response.status);
+
+  }
   );
 }
 

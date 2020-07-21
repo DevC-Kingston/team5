@@ -1,4 +1,4 @@
-function item_search(first_name) {
+function item_search() {
   message = {
     attachment: {
       type: "template",
@@ -6,7 +6,7 @@ function item_search(first_name) {
         template_type: "generic",
         elements: [
           {
-            // title: "Main Menu",
+             title: "Item Search Menu",
             subtitle: "Ah, searching for an item I see. Choose one of the following",
             buttons: [
               {
@@ -20,8 +20,8 @@ function item_search(first_name) {
                 payload: "machine_search",
               },
               {
-                type: "Clothes/Fashion 👔👗",
-                title: "Looking for an item?",
+                type: "postback",
+                title: "Clothes/Fashion 👔👗",
                 payload: "item_search",
               },
             ],
