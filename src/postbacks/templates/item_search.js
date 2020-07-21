@@ -1,4 +1,4 @@
-function get_started(first_name) {
+function item_search(first_name) {
   message = {
     attachment: {
       type: "template",
