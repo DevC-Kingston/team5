@@ -79,8 +79,8 @@ const handlePostbackEvent = async (event) => {
     break;
 
     case "item_search":
-      let message = item_search();
-      sendMessage(event.sender.id, message);
+      //let message = item_search();// cant declare variable twice cause varibale is 'case' scoped
+      sendMessage(event.sender.id, item_search());
       console.log("-----------> Item search postback event");
     break;
 
