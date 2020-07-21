@@ -68,9 +68,12 @@ app.post("/webhook", (req, res) => {
   }
 });
 
+const itemPostbackFlag = false;
+
 const handlePostbackEvent = async (event) => {
   const { first_name } = await getUserPersonalInfo(event.sender.id);
   switch (event.postback.payload) {
+
     case "get_started":
       let message = get_started(first_name);
       sendMessage(event.sender.id, message);
@@ -78,9 +81,23 @@ const handlePostbackEvent = async (event) => {
       break;
 
     case "item_search":
+      itemPostbackFlag = true;
       let itemSearchMessage = item_search(); //cant declare variable twice cause variable is 'case' scoped
       sendMessage(event.sender.id, itemSearchMessage);
       console.log("-----------> Item search postback event");
+      break;
+
+    case "food_search":
+      sendMessage(event.sender.id, "Please enter the name of the food or ingredient you are searching for");
+      break;
+    
+    case "machine_search":
+      sendMessage(event.sender.id, "Please enter the name of the appliance or machinery you are searching for");
+      break;
+    
+    case "fashion_search":
+      sendMessage(event.sender.id, "Please enter the name of the clothing item you are searching for");
+      //maybe accept a picture for this and search similar options?
       break;
 
     default:
@@ -90,7 +107,10 @@ const handlePostbackEvent = async (event) => {
 };
 
 const handleMessageEvent = () => {
-  console.log("Message back event");
+  console.log("Message received Event");
+  if (itemPostbackFlag){
+    console.log("Message received Event triggered by search item conversation");
+  }
 };
 
 async function getUserPersonalInfo(recipientId) {
@@ -103,11 +123,12 @@ async function getUserPersonalInfo(recipientId) {
 
 // generic function sending messages
 function sendMessage(recipientId, message) {
-
   console.log(`----------> ID: ${recipientId}`);
-
+  
   try{
-    axios.post("https://graph.facebook.com/v7.0/me/messages",
+    
+    axios.post(
+      "https://graph.facebook.com/v7.0/me/messages",
       {
         recipient: { id: recipientId },
         message: message,
