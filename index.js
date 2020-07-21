@@ -112,11 +112,9 @@ const handlePostbackEvent = async (event) => {
   }
 };
 
-const handleMessageEvent = () => {
+const handleMessageEvent = (event) => { 
   console.log("Message received Event");
-  if (itemPostbackFlag){
-    console.log("Message received Event triggered by search item conversation");
-  }
+  console.log(event);
 };
 
 async function getUserPersonalInfo(recipientId) {
