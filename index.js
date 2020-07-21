@@ -58,7 +58,8 @@ app.post("/webhook", (req, res) => {
       } else if (webhook_event.postback) {
         let payload = await handlePostbackEvent(webhook_event);
         if(payload="food_search"){
-          console.log(`text received from ${payload}`);
+          message = {text:`text received from ${payload}`};
+          sendMessage(event.sender.id, message);
         }
       }
     });
