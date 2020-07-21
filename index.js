@@ -69,6 +69,7 @@ app.post("/webhook", (req, res) => {
 });
 
 let itemPostbackFlag;
+let message;
 
 const handlePostbackEvent = async (event) => {
   const { first_name } = await getUserPersonalInfo(event.sender.id);
@@ -77,7 +78,7 @@ const handlePostbackEvent = async (event) => {
 
     case "get_started":
       itemPostbackFlag = false
-      let message = get_started(first_name);
+      message = get_started(first_name);
       sendMessage(event.sender.id, message);
       console.log("-----------> GET STARTED event");
       break;
