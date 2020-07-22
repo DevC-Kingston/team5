@@ -145,8 +145,8 @@ const handleMessageEvent = async (event, payload) => {
   }
 
   if (greeting && greeting.confidence) {
-    console.log("GREETINGS")
-    // message = get_started(first_name);
+    message = get_started(first_name);
+    sendMessage(event.sender.id, message);
   }
 
   if (thanks && thanks.confidence > 0.8) {
