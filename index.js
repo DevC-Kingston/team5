@@ -124,7 +124,7 @@ const handleMessageEvent = async (event, payload) => {
   const bye = firstTrait(event.message.nlp, 'wit$bye');
 
   let item = event.message.text; //user message containing item ordered
-  
+  console.log(payload)
   switch(payload){
     case "food_search": 
       message = {text:`text received from ${payload}`};
