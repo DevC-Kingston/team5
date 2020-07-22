@@ -134,7 +134,7 @@ const handlePostbackEvent = async (event) => {
 
 const handleMessageEvent = async (event, payload) => {
   console.log("Message received Event");
-  const userID = webhook_event.sender.id;
+  const userID = event.sender.id;
   // searchAppliance(event.message.text,event);
   // searchClothes(event.message.text,event);
   // searchFood(event.message.text,event);
@@ -176,6 +176,10 @@ const handleMessageEvent = async (event, payload) => {
       message = { text: "Checking our clothes section" }; // actually check database here
       sendMessage(event.sender.id, message);
       break;
+    
+    default:
+      message = { text: `Your message was ${item}`}; // actually check database here
+      sendMessage(event.sender.id, message);
   }
 
   return;
