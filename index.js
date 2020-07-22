@@ -113,37 +113,39 @@ const handlePostbackEvent = async (event) => {
 };
 
 const handleMessageEvent = async (event, payload) => { 
-  const { first_name } = await getUserPersonalInfo(event.sender.id);
-  let item = event.message.text; //user message containing item ordered
   console.log("Message received Event");
-  
-  if(payload="food_search"){
-    message = {text:`text received from ${payload}`};
-    sendMessage(event.sender.id, message);
-  }
 
-  if(payload="machine_search"){
-    message = {text:`text received from ${payload}`};
-    sendMessage(event.sender.id, message);
-  }
-
-  if(payload="fashion_search"){
-   
-    message = {text:`text received from ${payload}`};
-    sendMessage(event.sender.id, message);
-  }
-
-  //respond to normal text messages
-  
-  
+  const {first_name} = await getUserPersonalInfo(event.sender.id);
   const greeting = firstTrait(event.message.nlp, 'wit$greetings');
   const thanks = firstTrait(event.message.nlp, 'wit$thanks');
   const bye = firstTrait(event.message.nlp, 'wit$bye');
 
+  let item = event.message.text; //user message containing item ordered
+  
+  switch(payload){
+    case "food_search": 
+      message = {text:`text received from ${payload}`};
+      sendMessage(event.sender.id, message);
+      break;
+
+    case "machine_search":
+      message = {text:`text received from ${payload}`};
+      sendMessage(event.sender.id, message);
+      break;
+
+    case "fashion_search":
+      message = {text:`text received from ${payload}`};
+      sendMessage(event.sender.id, message);
+      break;
+    
+      default:
+        //respond to normal text messages
+        break;
+  }
+
   if (greeting && greeting.confidence > 0.8) {
     //prompts with get started postback menu
     message = get_started(first_name);
-
   }
 
   if (thanks && thanks.confidence > 0.8) {
