@@ -55,12 +55,14 @@ app.post("/webhook", (req, res) => {
       // console.log(webhook_event);
       let payload;
 
-      if (webhook_event.message && webhook_event.message.text) {
-        handleMessageEvent(webhook_event, payload);
-      }
+      
       
       if (webhook_event.postback) {
         payload = await handlePostbackEvent(webhook_event);
+      }
+      
+      if (webhook_event.message && webhook_event.message.text) {
+        handleMessageEvent(webhook_event, payload);
       }
     });
 
