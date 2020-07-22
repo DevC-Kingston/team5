@@ -40,6 +40,13 @@ app.get("/webhook", (req, res) => {
   }
 });
 
+let converstionStates=[
+  "getting_started",
+  "item_search",
+  "food_search",
+  "machine_search",
+  "fashion_search",
+];
 let message;
 // Creates the endpoint for our webhook
 app.post("/webhook", (req, res) => {
@@ -49,19 +56,16 @@ app.post("/webhook", (req, res) => {
   if (body.object === "page") {
     // Iterates over each entry - there may be multiple if batched
     body.entry.forEach(async (entry) => {
-      // Gets the message. entry.messaging is an array, but
-      // will only ever contain one message, so we get index 0
+      // Gets the message.entry.messaging is an array, but will only contain one message, hence index 0
       let webhook_event = entry.messaging[0];
-      // console.log(webhook_event);
-      let payload;
       
+      //user need to be stored in the database so we can track the conversational state
+            
       if (webhook_event.postback) {
         payload = await handlePostbackEvent(webhook_event);
-        console.log(`--- 1 ---->${payload}`)
       }
-      console.log(`--- 2 ---->${payload}`)
-      if (webhook_event.message && webhook_event.message.text) {
-        console.log(`--- 3 ---->${payload}`)
+
+      if (webhook_event.message && webhook_event.message.text){
         handleMessageEvent(webhook_event, payload);
       }
     });
@@ -75,33 +79,38 @@ app.post("/webhook", (req, res) => {
 });
 
 const handlePostbackEvent = async (event) => {
-  const { first_name } = await getUserPersonalInfo(event.sender.id);
+  const {first_name} = await getUserPersonalInfo(event.sender.id);
+  let payload = event.postback.payload;
   
-  switch (event.postback.payload) {
-
+  switch (payload) {
     case "get_started":
+      currentState = payload;
       message = get_started(first_name);
       sendMessage(event.sender.id, message);
       console.log("-----------> GET STARTED event");
       break;
 
     case "item_search":
+      currentState = payload;
       message = item_search(); //cant declare variable twice cause variable is 'case' scoped
       sendMessage(event.sender.id, message);
-      console.log("-----------> Item search postback event");
+      console.log("Item search postback event");
       break;
 
     case "food_search":
+      currentState = payload;
       message = {text: "Please enter the name of the food or ingredient you are searching for"};
       sendMessage(event.sender.id, message);
       break;
     
     case "machine_search":
+      currentState = payload;
       message = {text: "Please enter the name of the appliance or machinery you are searching for"};
       sendMessage(event.sender.id, message);
       break;
     
     case "fashion_search":
+      currentState = payload;
       message = {text: "Please enter the name of the clothing item you are searching for"};
       sendMessage(event.sender.id, message);
       //maybe accept a picture for this and search similar options?
@@ -111,54 +120,55 @@ const handlePostbackEvent = async (event) => {
       console.log("---------> Postback Event");
     /**@todo do something here */
   }
-  return event.postback.payload;
+  return payload;
 };
 
 const handleMessageEvent = async (event, payload) => { 
   console.log("Message received Event");
-  console.log(`--- 4 ---->${payload}`)
-
+  const userID = webhook_event.sender.id;
   const {first_name} = await getUserPersonalInfo(event.sender.id);
   const greeting = firstTrait(event.message.nlp, 'wit$greetings');
   const thanks = firstTrait(event.message.nlp, 'wit$thanks');
   const bye = firstTrait(event.message.nlp, 'wit$bye');
-
   let item = event.message.text; //user message containing item ordered
-  switch(payload){
-    case "food_search": 
-      message = {text:`text received from ${payload}`};
-      sendMessage(event.sender.id, message);
-      break;
 
-    case "machine_search":
-      message = {text:`text received from ${payload}`};
-      sendMessage(event.sender.id, message);
-      break;
+  if (greeting && greeting.confidence) {
+    currentState = payload;
+    message = get_started(first_name);
+    sendMessage(event.sender.id, message);
+    return payload;
+  }else{
+    //send default message
+  }
 
-    case "fashion_search":
-      message = {text:`text received from ${payload}`};
+  
+  //fetch userid from database based on userID
+  //read the users currentState
+  //switch statement with current state 
+
+  switch (payload) {
+
+    case "food_search":
+      currentState = "database";
+      message = {text: "Checking our Food section"}; // actually check database here
       sendMessage(event.sender.id, message);
       break;
     
-      default:
-        //respond to normal text messages
-        break;
+    case "machine_search":
+      currentState = "database";
+      message = {text: "Checking our appliances section"}; // actually check database here
+      sendMessage(event.sender.id, message);
+      break;
+    
+    case "fashion_search":
+      currentState = "database";
+      message = {text: "Checking our clothes section"}; // actually check database here
+      sendMessage(event.sender.id, message);
+      break;
+
   }
 
-  if (greeting && greeting.confidence) {
-    message = get_started(first_name);
-    sendMessage(event.sender.id, message);
-  }
-
-  if (thanks && thanks.confidence > 0.8) {
-    //print appropriate message
-  }
-
-  if (bye && bye.confidence > 0.8) {
-    //print appropriate message
-  }
-
-  return;
+    return;
 };
 
 async function getUserPersonalInfo(recipientId) {
