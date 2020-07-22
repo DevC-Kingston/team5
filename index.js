@@ -126,6 +126,10 @@ const handlePostbackEvent = async (event) => {
 const handleMessageEvent = async (event, payload) => { 
   console.log("Message received Event");
   const userID = webhook_event.sender.id;
+  // searchAppliance(event.message.text,event);
+  // searchClothes(event.message.text,event);
+  // searchFood(event.message.text,event);
+
   const {first_name} = await getUserPersonalInfo(event.sender.id);
   const greeting = firstTrait(event.message.nlp, 'wit$greetings');
   const thanks = firstTrait(event.message.nlp, 'wit$thanks');
@@ -203,6 +207,84 @@ function sendMessage(recipientId, message) {
     console.log(error.response.status);
   }
 
+  return;
+}
+
+
+//Functions for searching the database.
+// This one searches appliances
+function searchAppliance(itemname,event) {
+  console.log(`----------> Item to search for :${itemname}`);
+  axios({
+    method: "POST",
+    url: "https://us-central1-luk-fi-it-chatbot.cloudfunctions.net/lukfiit",
+    headers: {},
+     data: {
+       actionn: 'checkitemappliance',
+       item: itemname
+     }
+  })
+    .then(res => {
+      //Here is where you'd send the result (res) as a message to the user. The result is already in the appropriate format
+      //ie. the result is in this format:
+      //res {
+      //messages: [ {text: 'Nutribullet 12 PC🔌 \n' +'\n' +  '📌 You can find it at this location:123 Constant Spring Rd\n' +  '\n' +  ' 💵 Cost:10,500 JMD'  } ]
+     //}
+      console.log("res", res.data);
+      sendMessage(event.sender.id,res.data);
+  
+    })
+    .catch(err => {
+      console.log("error in request", err);
+    });
+  return;
+}
+
+// This one searches food
+function searchFood(itemname,event) {
+  console.log(`----------> Item to search for :${itemname}`);
+  axios({
+    method: "POST",
+    url: "https://us-central1-luk-fi-it-chatbot.cloudfunctions.net/lukfiit",
+    headers: {},
+     data: {
+       actionn: 'checkitemfood',
+       item: itemname
+     }
+  })
+    .then(res => {
+        //Here is where you'd send the result (res) as a message to the user. The result is already in the appropriate format
+      console.log("res", res.data);
+      sendMessage(event.sender.id,res.data);
+  
+    })
+    .catch(err => {
+      console.log("error in request", err);
+    });
+  return;
+}
+
+// This one searches clothes.
+function searchClothes(itemname,event) {
+  console.log(`----------> Item to search for :${itemname}`);
+  axios({
+    method: "POST",
+    url: "https://us-central1-luk-fi-it-chatbot.cloudfunctions.net/lukfiit",
+    headers: {},
+     data: {
+       actionn: 'checkitemclothes',
+       item: itemname
+     }
+  })
+    .then(res => {
+        //Here is where you'd send the result (res) as a message to the user. The result is already in the appropriate format
+      console.log("res", res.data);
+      sendMessage(event.sender.id,res.data);
+  
+    })
+    .catch(err => {
+      console.log("error in request", err);
+    });
   return;
 }
 
