@@ -54,14 +54,14 @@ app.post("/webhook", (req, res) => {
       let webhook_event = entry.messaging[0];
       // console.log(webhook_event);
       let payload;
-
-      
       
       if (webhook_event.postback) {
         payload = await handlePostbackEvent(webhook_event);
+        console.log(`--- 1 ---->${payload}`)
       }
-      
+      console.log(`--- 2 ---->${payload}`)
       if (webhook_event.message && webhook_event.message.text) {
+        console.log(`--- 3 ---->${payload}`)
         handleMessageEvent(webhook_event, payload);
       }
     });
@@ -116,7 +116,7 @@ const handlePostbackEvent = async (event) => {
 
 const handleMessageEvent = async (event, payload) => { 
   console.log("Message received Event");
-  console.log(event.message.nlp);
+  console.log(`--- 4 ---->${payload}`)
 
   const {first_name} = await getUserPersonalInfo(event.sender.id);
   const greeting = firstTrait(event.message.nlp, 'wit$greetings');
@@ -124,7 +124,6 @@ const handleMessageEvent = async (event, payload) => {
   const bye = firstTrait(event.message.nlp, 'wit$bye');
 
   let item = event.message.text; //user message containing item ordered
-  console.log(payload)
   switch(payload){
     case "food_search": 
       message = {text:`text received from ${payload}`};
