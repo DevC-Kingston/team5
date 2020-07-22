@@ -5,6 +5,8 @@ const { get_started, item_search } = require("./src/templates/postbacks");
 
 const app = express();
 
+console.log("Worked");
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -40,7 +42,7 @@ app.get("/webhook", (req, res) => {
   }
 });
 
-let converstionStates=[
+let converstionStates = [
   "getting_started",
   "item_search",
   "food_search",
@@ -58,14 +60,14 @@ app.post("/webhook", (req, res) => {
     body.entry.forEach(async (entry) => {
       // Gets the message.entry.messaging is an array, but will only contain one message, hence index 0
       let webhook_event = entry.messaging[0];
-      
+
       //user need to be stored in the database so we can track the conversational state
-            
+
       if (webhook_event.postback) {
         payload = await handlePostbackEvent(webhook_event);
       }
 
-      if (webhook_event.message && webhook_event.message.text){
+      if (webhook_event.message && webhook_event.message.text) {
         handleMessageEvent(webhook_event, payload);
       }
     });
@@ -79,9 +81,9 @@ app.post("/webhook", (req, res) => {
 });
 
 const handlePostbackEvent = async (event) => {
-  const {first_name} = await getUserPersonalInfo(event.sender.id);
+  const { first_name } = await getUserPersonalInfo(event.sender.id);
   let payload = event.postback.payload;
-  
+
   switch (payload) {
     case "get_started":
       currentState = payload;
@@ -99,19 +101,28 @@ const handlePostbackEvent = async (event) => {
 
     case "food_search":
       currentState = payload;
-      message = {text: "Please enter the name of the food or ingredient you are searching for"};
+      message = {
+        text:
+          "Please enter the name of the food or ingredient you are searching for",
+      };
       sendMessage(event.sender.id, message);
       break;
-    
+
     case "machine_search":
       currentState = payload;
-      message = {text: "Please enter the name of the appliance or machinery you are searching for"};
+      message = {
+        text:
+          "Please enter the name of the appliance or machinery you are searching for",
+      };
       sendMessage(event.sender.id, message);
       break;
-    
+
     case "fashion_search":
       currentState = payload;
-      message = {text: "Please enter the name of the clothing item you are searching for"};
+      message = {
+        text:
+          "Please enter the name of the clothing item you are searching for",
+      };
       sendMessage(event.sender.id, message);
       //maybe accept a picture for this and search similar options?
       break;
@@ -123,17 +134,17 @@ const handlePostbackEvent = async (event) => {
   return payload;
 };
 
-const handleMessageEvent = async (event, payload) => { 
+const handleMessageEvent = async (event, payload) => {
   console.log("Message received Event");
   const userID = webhook_event.sender.id;
   // searchAppliance(event.message.text,event);
   // searchClothes(event.message.text,event);
   // searchFood(event.message.text,event);
 
-  const {first_name} = await getUserPersonalInfo(event.sender.id);
-  const greeting = firstTrait(event.message.nlp, 'wit$greetings');
-  const thanks = firstTrait(event.message.nlp, 'wit$thanks');
-  const bye = firstTrait(event.message.nlp, 'wit$bye');
+  const { first_name } = await getUserPersonalInfo(event.sender.id);
+  const greeting = firstTrait(event.message.nlp, "wit$greetings");
+  const thanks = firstTrait(event.message.nlp, "wit$thanks");
+  const bye = firstTrait(event.message.nlp, "wit$bye");
   let item = event.message.text; //user message containing item ordered
 
   if (greeting && greeting.confidence) {
@@ -141,52 +152,49 @@ const handleMessageEvent = async (event, payload) => {
     message = get_started(first_name);
     sendMessage(event.sender.id, message);
     return payload;
-  }else{
+  } else {
     //send default message
   }
 
-  
   //fetch userid from database based on userID
   //read the users currentState
-  //switch statement with current state 
+  //switch statement with current state
 
   switch (payload) {
-
     case "food_search":
       currentState = "database";
-      message = {text: "Checking our Food section"}; // actually check database here
+      message = { text: "Checking our Food section" }; // actually check database here
       sendMessage(event.sender.id, message);
       break;
-    
+
     case "machine_search":
       currentState = "database";
-      message = {text: "Checking our appliances section"}; // actually check database here
+      message = { text: "Checking our appliances section" }; // actually check database here
       sendMessage(event.sender.id, message);
       break;
-    
+
     case "fashion_search":
       currentState = "database";
-      message = {text: "Checking our clothes section"}; // actually check database here
+      message = { text: "Checking our clothes section" }; // actually check database here
       sendMessage(event.sender.id, message);
       break;
-
   }
 
-    return;
+  return;
 };
 
 async function getUserPersonalInfo(recipientId) {
   const response = await axios.get(
     `https://graph.facebook.com/${recipientId}?fields=first_name,last_name&access_token=${process.env.ACCESS_TOKEN}`
   );
-  const {first_name, last_name} = response.data;
-  return {first_name, last_name};
+  const { first_name, last_name } = response.data;
+  return { first_name, last_name };
 }
 
 // generic function sending messages
 function sendMessage(recipientId, message) {
   console.log(`----------> ID: ${recipientId}`);
-  try{
+  try {
     axios.post(
       "https://graph.facebook.com/v7.0/me/messages",
       {
@@ -210,79 +218,75 @@ function sendMessage(recipientId, message) {
   return;
 }
 
-
 //Functions for searching the database.
 // This one searches appliances
-function searchAppliance(itemname,event) {
+function searchAppliance(itemname, event) {
   console.log(`----------> Item to search for :${itemname}`);
   axios({
     method: "POST",
     url: "https://us-central1-luk-fi-it-chatbot.cloudfunctions.net/lukfiit",
     headers: {},
-     data: {
-       actionn: 'checkitemappliance',
-       item: itemname
-     }
+    data: {
+      actionn: "checkitemappliance",
+      item: itemname,
+    },
   })
-    .then(res => {
+    .then((res) => {
       //Here is where you'd send the result (res) as a message to the user. The result is already in the appropriate format
       //ie. the result is in this format:
       //res {
       //messages: [ {text: 'Nutribullet 12 PC🔌 \n' +'\n' +  '📌 You can find it at this location:123 Constant Spring Rd\n' +  '\n' +  ' 💵 Cost:10,500 JMD'  } ]
-     //}
+      //}
       console.log("res", res.data);
-      sendMessage(event.sender.id,res.data);
-  
+      sendMessage(event.sender.id, res.data);
     })
-    .catch(err => {
+    .catch((err) => {
       console.log("error in request", err);
     });
   return;
 }
 
 // This one searches food
-function searchFood(itemname,event) {
+function searchFood(itemname, event) {
   console.log(`----------> Item to search for :${itemname}`);
   axios({
     method: "POST",
     url: "https://us-central1-luk-fi-it-chatbot.cloudfunctions.net/lukfiit",
     headers: {},
-     data: {
-       actionn: 'checkitemfood',
-       item: itemname
-     }
+    data: {
+      actionn: "checkitemfood",
+      item: itemname,
+    },
   })
-    .then(res => {
-        //Here is where you'd send the result (res) as a message to the user. The result is already in the appropriate format
+    .then((res) => {
+      //Here is where you'd send the result (res) as a message to the user. The result is already in the appropriate format
       console.log("res", res.data);
-      sendMessage(event.sender.id,res.data);
-  
+      sendMessage(event.sender.id, res.data);
     })
-    .catch(err => {
+    .catch((err) => {
       console.log("error in request", err);
     });
   return;
 }
 
 // This one searches clothes.
-function searchClothes(itemname,event) {
+function searchClothes(itemname, event) {
   console.log(`----------> Item to search for :${itemname}`);
   axios({
     method: "POST",
     url: "https://us-central1-luk-fi-it-chatbot.cloudfunctions.net/lukfiit",
     headers: {},
-     data: {
-       actionn: 'checkitemclothes',
-       item: itemname
-     }
+    data: {
+      actionn: "checkitemclothes",
+      item: itemname,
+    },
   })
-    .then(res => {
-        //Here is where you'd send the result (res) as a message to the user. The result is already in the appropriate format
+    .then((res) => {
+      //Here is where you'd send the result (res) as a message to the user. The result is already in the appropriate format
       console.log("res", res.data);
-      sendMessage(event.sender.id,res.data);
-  
+      sendMessage(event.sender.id, res.data);
     })
-    .catch(err => {
+    .catch((err) => {
       console.log("error in request", err);
     });
   return;
@@ -292,4 +296,4 @@ function searchClothes(itemname,event) {
 function firstTrait(nlp, name) {
   return nlp && nlp.entities && nlp.traits[name] && nlp.traits[name][0];
 }
-``
+``;
