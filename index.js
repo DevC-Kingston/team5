@@ -169,9 +169,8 @@ const handleMessageEvent = async (event, payload) => {
       message = {text: "Checking our clothes section"}; // actually check database here
       sendMessage(event.sender.id, message);
       break;
-
   }
-
+  
     return;
 };
 
