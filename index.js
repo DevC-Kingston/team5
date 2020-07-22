@@ -112,12 +112,43 @@ const handlePostbackEvent = async (event) => {
   return event.postback.payload;
 };
 
-const handleMessageEvent = (event) => { 
+const handleMessageEvent = (event, payload) => { 
+  let item = event.message.text; //user message containing item ordered
   console.log("Message received Event");
+  
   if(payload="food_search"){
     message = {text:`text received from ${payload}`};
     sendMessage(event.sender.id, message);
   }
+
+  if(payload="machine_search"){
+    message = {text:`text received from ${payload}`};
+    sendMessage(event.sender.id, message);
+  }
+
+  if(payload="fashion_search"){
+   
+    message = {text:`text received from ${payload}`};
+    sendMessage(event.sender.id, message);
+  }
+
+  //respond to normal text messages
+  const greeting = firstTrait(event.message.nlp, 'wit$greetings');
+  const thanks = firstTrait(event.message.nlp, 'wit$thanks');
+  const bye = firstTrait(event.message.nlp, 'wit$bye');
+
+  if (greeting && greeting.confidence > 0.8) {
+    //print appropriate message
+  }
+
+  if (thanks && thanks.confidence > 0.8) {
+    //print appropriate message
+  }
+
+  if (bye && bye.confidence > 0.8) {
+    //print appropriate message
+  }
+
   return;
 };
 
@@ -154,4 +185,9 @@ function sendMessage(recipientId, message) {
   }
 
   return;
+}
+
+//NLP
+function firstTrait(nlp, name) {
+  return nlp && nlp.entities && nlp.traits[name] && nlp.traits[name][0];
 }
