@@ -53,15 +53,14 @@ app.post("/webhook", (req, res) => {
       // will only ever contain one message, so we get index 0
       let webhook_event = entry.messaging[0];
       // console.log(webhook_event);
+      let payload;
 
       if (webhook_event.message && webhook_event.message.text) {
-        handleMessageEvent(webhook_event);
-      } else if (webhook_event.postback) {
-        let payload = await handlePostbackEvent(webhook_event);
-        if(payload="food_search"){
-          message = {text:`text received from ${payload}`};
-          sendMessage(event.sender.id, message);
-        }
+        handleMessageEvent(webhook_event, payload);
+      }
+      
+      if (webhook_event.postback) {
+        payload = await handlePostbackEvent(webhook_event);
       }
     });
 
@@ -115,7 +114,11 @@ const handlePostbackEvent = async (event) => {
 
 const handleMessageEvent = (event) => { 
   console.log("Message received Event");
-  console.log(event);
+  if(payload="food_search"){
+    message = {text:`text received from ${payload}`};
+    sendMessage(event.sender.id, message);
+  }
+  return;
 };
 
 async function getUserPersonalInfo(recipientId) {
