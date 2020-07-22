@@ -114,7 +114,7 @@ const handlePostbackEvent = async (event) => {
 
 const handleMessageEvent = async (event, payload) => { 
   console.log("Message received Event");
-  console.log(event);
+  console.log(event.message.nlp);
 
   const {first_name} = await getUserPersonalInfo(event.sender.id);
   const greeting = firstTrait(event.message.nlp, 'wit$greetings');
