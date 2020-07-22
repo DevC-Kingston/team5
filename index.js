@@ -58,15 +58,15 @@ app.post("/webhook", (req, res) => {
     body.entry.forEach(async (entry) => {
       // Gets the message.entry.messaging is an array, but will only contain one message, hence index 0
       let webhook_event = entry.messaging[0];
-      
-      //user need to be stored in the database so we can track the conversational state
-            
-      if (webhook_event.postback) {
-        payload = await handlePostbackEvent(webhook_event);
-      }
+      // console.log(webhook_event);
 
-      if (webhook_event.message && webhook_event.message.text){
+      if (webhook_event.message && webhook_event.message.text) {
+        console.log("Message was" + webhook_event.message.text);
         handleMessageEvent(webhook_event, payload);
+      }
+      
+       if (webhook_event.postback) {
+        let payload = await handlePostbackEvent(webhook_event);
       }
     });
 
