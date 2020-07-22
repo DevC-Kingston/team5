@@ -144,8 +144,8 @@ const handleMessageEvent = async (event, payload) => {
         break;
   }
 
-  if (greeting) {
-    console.log(greeting.confidence)
+  if (greeting && greeting.confidence) {
+    console.log("GREETINGS")
     // message = get_started(first_name);
   }
 
