@@ -40,6 +40,7 @@ app.get("/webhook", (req, res) => {
   }
 });
 
+let message;
 // Creates the endpoint for our webhook
 app.post("/webhook", (req, res) => {
   let body = req.body;
@@ -72,23 +73,18 @@ app.post("/webhook", (req, res) => {
   }
 });
 
-let itemPostbackFlag;
-let message;
-
 const handlePostbackEvent = async (event) => {
   const { first_name } = await getUserPersonalInfo(event.sender.id);
   
   switch (event.postback.payload) {
 
     case "get_started":
-      itemPostbackFlag = false
       message = get_started(first_name);
       sendMessage(event.sender.id, message);
       console.log("-----------> GET STARTED event");
       break;
 
     case "item_search":
-      itemPostbackFlag = true;
       message = item_search(); //cant declare variable twice cause variable is 'case' scoped
       sendMessage(event.sender.id, message);
       console.log("-----------> Item search postback event");
