@@ -114,6 +114,7 @@ const handlePostbackEvent = async (event) => {
 
 const handleMessageEvent = async (event, payload) => { 
   console.log("Message received Event");
+  console.log(event);
 
   const {first_name} = await getUserPersonalInfo(event.sender.id);
   const greeting = firstTrait(event.message.nlp, 'wit$greetings');
@@ -144,7 +145,6 @@ const handleMessageEvent = async (event, payload) => {
   }
 
   if (greeting && greeting.confidence > 0.8) {
-    //prompts with get started postback menu
     message = get_started(first_name);
   }
 
