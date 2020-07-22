@@ -5,8 +5,6 @@ const { get_started, item_search } = require("./src/templates/postbacks");
 
 const app = express();
 
-console.log("Worked");
-
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
