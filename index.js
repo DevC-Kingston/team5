@@ -112,7 +112,8 @@ const handlePostbackEvent = async (event) => {
   return event.postback.payload;
 };
 
-const handleMessageEvent = (event, payload) => { 
+const handleMessageEvent = async (event, payload) => { 
+  const { first_name } = await getUserPersonalInfo(event.sender.id);
   let item = event.message.text; //user message containing item ordered
   console.log("Message received Event");
   
@@ -133,7 +134,7 @@ const handleMessageEvent = (event, payload) => {
   }
 
   //respond to normal text messages
-  const { first_name } = await getUserPersonalInfo(event.sender.id);
+  
   
   const greeting = firstTrait(event.message.nlp, 'wit$greetings');
   const thanks = firstTrait(event.message.nlp, 'wit$thanks');
