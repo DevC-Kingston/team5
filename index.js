@@ -54,6 +54,7 @@ app.post("/webhook", async (req, res) => {
       // console.log(webhook_event);
 
       if (webhook_event.message && webhook_event.message.text) {
+        console.log("Message was" + webhook_event.message.text);
         handleMessageEvent(webhook_event);
       } else if (webhook_event.postback) {
         let payload = await handlePostbackEvent(webhook_event);
