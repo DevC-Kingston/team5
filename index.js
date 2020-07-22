@@ -133,12 +133,16 @@ const handleMessageEvent = (event, payload) => {
   }
 
   //respond to normal text messages
+  const { first_name } = await getUserPersonalInfo(event.sender.id);
+  
   const greeting = firstTrait(event.message.nlp, 'wit$greetings');
   const thanks = firstTrait(event.message.nlp, 'wit$thanks');
   const bye = firstTrait(event.message.nlp, 'wit$bye');
 
   if (greeting && greeting.confidence > 0.8) {
-    //print appropriate message
+    //prompts with get started postback menu
+    message = get_started(first_name);
+
   }
 
   if (thanks && thanks.confidence > 0.8) {

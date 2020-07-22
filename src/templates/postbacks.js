@@ -43,22 +43,22 @@ exports.get_started = (first_name) => {
         template_type: "generic",
         elements: [
           {
-            title: "Main Menu",
-            subtitle: `Hello ${first_name}. How may I help you?`,
+            title: `Hi there ${first_name} ! 👋`,
+            subtitle: `How may I assist?`,
             buttons: [
               {
                 type: "postback",
-                title: "Ordering Food",
+                title: "I want to Order food",
                 payload: "food",
               },
               {
                 type: "postback",
-                title: "Ordering Groceries",
+                title: "I want to get some Groceries",
                 payload: "grocery",
               },
               {
                 type: "postback",
-                title: "Looking for an item?",
+                title: "I'm looking for something?",
                 payload: "item_search",
               },
             ],
