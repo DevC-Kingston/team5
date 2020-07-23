@@ -167,7 +167,7 @@ const handleMessageEvent = async (event) => {
       console.log("SUCCESS ---> ", foodSuccess);
       if (foodSuccess) {
         sendMessage(userID, {
-          text: `${itemName} was found for ${product.cost}`,
+          text: `${itemName} was found for ${foodProduct.cost}`,
         });
       }
       //consider handling quick reply in search function
