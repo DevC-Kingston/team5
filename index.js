@@ -149,7 +149,7 @@ const handleMessageEvent = async (event) => {
 
   let payload = searchids(userID);
 
-  console.log(`FROM HANDLE MESSAGE -> ${payload.data}`);
+  console.log(`FROM HANDLE MESSAGE -> ${payload}`);
 
   switch (payload) {
     case "food_search":
