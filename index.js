@@ -160,6 +160,7 @@ const handleMessageEvent = async (event) => {
       console.log("<--- Search food in Handle message case --->");
       addID(userID, "database_food");
       const { resMessage, success } = searchFood(itemName);
+      console.log("SUCCESS ---> ", success);
       if (success) {
         sendMessage(userID, resMessage);
       }
