@@ -60,7 +60,7 @@ app.post("/webhook", (req, res) => {
       // Gets the message.entry.messaging is an array, but will only contain one message, hence index 0
       let webhook_event = entry.messaging[0];
 
-      searchids(webhook_event.sender.id);
+      await searchids(webhook_event.sender.id);
 
       if (webhook_event.postback) {
         handlePostbackEvent(webhook_event);
@@ -150,10 +150,12 @@ const handleMessageEvent = async (event) => {
     message = get_started(first_name);
     return sendMessage(userID, message);
   }
-
+  console.log("-------------------------------------------------");
   let payload = await searchids(userID);
+  console.log("payload", payload);
+  console.log("-------------------------------------------------");
 
-  console.log(`FROM HANDLE MESSAGE -> ${payload}`);
+  // console.log(`FROM HANDLE MESSAGE -> ${payload}`);
 
   switch (payload) {
     case "food_search":
@@ -346,9 +348,9 @@ function searchClothes(itemname, event) {
 }
 
 //Seach for ids and return the current state
-function searchids(uid) {
+async function searchids(uid) {
   console.log(`----------> ID to search for :${uid}`);
-  axios({
+  const res = await axios({
     method: "POST",
     url: "https://us-central1-luk-fi-it-chatbot.cloudfunctions.net/lukfiit",
     headers: {},
@@ -356,22 +358,25 @@ function searchids(uid) {
       actionn: "searchIDs",
       uid: uid.toString(),
     },
-  })
-    .then((res) => {
-      console.log("THIS IS THE SEARCH ID FUNCTION:");
-      if (res.data == "User ID not found") {
-        console.log(`NOT FOUND -> ${res.data}`);
-        return addID(uid, "get_started");
-      } else {
-        console.log(`FOUND -> ${res.data}`);
-        return res.data;
-      }
-    })
-    .catch((err) => {
-      console.log("error in request -->", err.headers);
-    });
+  });
+  const data = await res.data;
 
-  return;
+  return data;
+  //   .then((res) => {
+  //     console.log("THIS IS THE SEARCH ID FUNCTION:");
+  //     if (res.data == "User ID not found") {
+  //       console.log(`NOT FOUND -> ${res.data}`);
+  //       return addID(uid, "get_started");
+  //     } else {
+  //       console.log(`FOUND -> ${res.data}`);
+  //       return res.data;
+  //     }
+  //   })
+  //   .catch((err) => {
+  //     console.log("error in request -->", err.headers);
+  //   });
+
+  // return;
 }
 
 //Add or update an id with the current state
