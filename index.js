@@ -306,8 +306,8 @@ function searchFood(itemname, event) {
   })
     .then((res) => {
       //Here is where you'd send the result (res) as a message to the user. The result is already in the appropriate format
-      console.log("res", res.data);
-      sendMessage(event.sender.id, res.data);
+      console.log("res in search food --> ", res.data);
+      // sendMessage(event.sender.id, res.data);
     })
     .catch((err) => {
       console.log("error in request", err);
