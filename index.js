@@ -155,7 +155,7 @@ const handleMessageEvent = async (event) => {
 
   let payload = searchids(userID);
 
-  console.log(`FROM HANDLE MESSAGE -> ${payload}`);
+  console.log(`FROM HANDLE MESSAGE -> ${payload.data}`);
 
   switch (payload) {
     case "food_search":
@@ -350,14 +350,14 @@ function searchids(uid) {
       console.log("THIS IS THE SEARCH ID FUNCTION:");
       if (res.data == "User ID not found") {
         console.log(`NOT FOUND -> ${res.data}`);
-        addID(uid, "get_started");
+        return addID(uid, "get_started");
       } else {
         console.log(`FOUND -> ${res.data}`);
         return res.data;
       }
     })
     .catch((err) => {
-      console.log("error in request", err);
+      console.log("error in request -->", err);
     });
 
   return;
