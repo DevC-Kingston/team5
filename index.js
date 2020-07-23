@@ -353,8 +353,8 @@ function searchids(uid) {
     },
   })
     .then((res) => {
-      //
-      console.log("res", res);
+      console.log("THIS IS THE SEARCH ID FUNCTION:");
+      console.log(res)
     })
     .catch((err) => {
       console.log("error in request", err);
@@ -378,7 +378,7 @@ function addids(uid,cs) {
   })
     .then((res) => {
       //
-      console.log("res", res);
+      console.log("UPDATES STATE --->", res);
     })
     .catch((err) => {
       console.log("error in request", err);
@@ -390,4 +390,4 @@ function addids(uid,cs) {
 function firstTrait(nlp, name) {
   return nlp && nlp.entities && nlp.traits[name] && nlp.traits[name][0];
 }
-``;
+
