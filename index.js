@@ -65,7 +65,7 @@ app.post("/webhook", (req, res) => {
         handleMessageEvent(webhook_event);
       }
 
-      if (webhook_event.message.quickReply[0]) {
+      if (webhook_event.message.quick_replies[0]) {
         handleQuickReply(webhook_event.message.quickReply[0]);
       }
     });
