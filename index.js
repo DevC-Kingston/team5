@@ -69,9 +69,9 @@ app.post("/webhook", (req, res) => {
         handleMessageEvent(webhook_event);
       }
 
-      // if (webhook_event.message && webhook_event.message.quick_replies[0]) {
-      //   handleQuickReply(webhook_event.message.quickReply[0]);
-      // }
+      if (webhook_event.message && webhook_event.message.quick_reply) {
+        handleQuickReply(webhook_event);
+      }
     });
 
     // Returns a '200 OK' response to all requests
@@ -84,7 +84,7 @@ app.post("/webhook", (req, res) => {
 const handleQuickReply = async (event) => {
   console.log("EVENT QUICK REPLY", event);
   let userID = event.sender.id;
-  let payload = event.postback.payload;
+  let payload = event.message.quick_reply.payload;
   const { first_name } = await getUserPersonalInfo(userID);
 
   switch (payload) {
