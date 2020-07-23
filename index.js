@@ -163,7 +163,7 @@ const handleMessageEvent = async (event) => {
           text: `${itemName} was found for ${food.cost}`,
         });
         let deliveryMessage = deliveryReply();
-        sendQuickreply(deliveryMessage);
+        sendQuickreply(userID, deliveryMessage);
       }
       //consider handling quick reply in search function
       //sendQuickreply(userID, message);
