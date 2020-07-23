@@ -150,7 +150,7 @@ const handleMessageEvent = async (event) => {
   if (greeting && greeting.confidence) {
     addID(userID, "get_started");
     message = get_started(first_name);
-    sendMessage(userID, message);
+    return sendMessage(userID, message);
   }
 
   let payload = searchids(userID);
