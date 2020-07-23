@@ -161,10 +161,10 @@ const handleMessageEvent = async (event) => {
     case "food_search":
       console.log("<--- Search food in Handle message case --->");
       addID(userID, "database_food");
-      const { resMessage, success } = await searchFood(itemName);
+      const { resMessage: foodMsg, success } = await searchFood(itemName);
       console.log("SUCCESS ---> ", success);
       if (success) {
-        sendMessage(userID, resMessage);
+        sendMessage(userID, foodMsg);
       }
       //consider handling quick reply in search function
       //sendQuickreply(userID, message);
@@ -173,10 +173,10 @@ const handleMessageEvent = async (event) => {
     case "machine_search":
       console.log("<--- machine_search in Handle message case --->");
       addID(userID, "database_machine");
-      const { resMessage, success } = await searchAppliance(itemName);
+      const { resMessage: machineMsg, success } = await searchAppliance(itemName);
       console.log("SUCCESS ---> ", success);
       if (success){
-        sendMessage(userID, resMessage);
+        sendMessage(userID, machineMsg);
       }
       //sendQuickreply(userID, message);
       break;
@@ -184,10 +184,10 @@ const handleMessageEvent = async (event) => {
     case "fashion_search":
       console.log("<--- fashion_search in Handle message case --->");
       addID(userID, "database_fashion");
-      const { resMessage, success } = await searchClothes(itemName);
+      const { resMessage: fashionMsg, success } = await searchClothes(itemName);
       console.log("SUCCESS ---> ", success);
       if (success) {
-        sendMessage(userID, resMessage);
+        sendMessage(userID, fashionMsg);
       }
       //sendQuickreply(recipientId);
       break;
