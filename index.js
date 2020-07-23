@@ -103,6 +103,7 @@ const handleQuickReply = async (event) => {
       console.log("---------> Postback Event");
     /**@todo do something here */
   }
+  return;
 };
 
 const handlePostbackEvent = async (event) => {
