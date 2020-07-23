@@ -51,7 +51,7 @@ let message;
 // Creates the endpoint for our webhook
 app.post("/webhook", (req, res) => {
   let body = req.body;
-
+  let payload;
   // Checks this is an event from a page subscription
   if (body.object === "page") {
     // Iterates over each entry - there may be multiple if batched
@@ -62,7 +62,7 @@ app.post("/webhook", (req, res) => {
       //user need to be stored in the database so we can track the conversational state
 
       if (webhook_event.postback) {
-        payload = await handlePostbackEvent(webhook_event);
+        let payload = await handlePostbackEvent(webhook_event);
       }
 
       if (webhook_event.message && webhook_event.message.text) {
@@ -160,25 +160,26 @@ const handleMessageEvent = async (event, payload) => {
 
   switch (payload) {
     case "food_search":
-      currentState = "database";
-      message = { text: "Checking our Food section" }; // actually check database here
-      sendMessage(event.sender.id, message);
+      currentState = "database_food";
+      //actually check database here
+      //then if found do below else print sorry message from function
+      sendQuickreply(recipientId, message);
       break;
 
     case "machine_search":
-      currentState = "database";
-      message = { text: "Checking our appliances section" }; // actually check database here
-      sendMessage(event.sender.id, message);
+      currentState = "database_machine";
+      //actually check database here
+      sendQuickreply(recipientId, message);
       break;
 
     case "fashion_search":
-      currentState = "database";
-      message = { text: "Checking our clothes section" }; // actually check database here
-      sendMessage(event.sender.id, message);
+      currentState = "database_fashion";
+      //actually check database here
+      sendQuickreply(recipientId, message);
       break;
     
     default:
-      message = { text: `Your message was ${item}`}; // actually check database here
+      message = { text: `Your message was ${item}`};
       sendMessage(event.sender.id, message);
   }
 
@@ -195,13 +196,53 @@ async function getUserPersonalInfo(recipientId) {
 
 // generic function sending messages
 function sendMessage(recipientId, message) {
-  console.log(`----------> ID: ${recipientId}`);
+  
   try {
     axios.post(
       "https://graph.facebook.com/v7.0/me/messages",
       {
         recipient: { id: recipientId },
         message: message,
+      },
+      {
+        params: { access_token: process.env.ACCESS_TOKEN },
+      },
+      (err) => {
+        if (err) {
+          console.log("Error sending message: ", err);
+        }
+      }
+    );
+  } catch (error) {
+    console.log("#####  ERROR SENDING MESSAGE  #####");
+    console.log(error.response.status);
+  }
+
+  return;
+}
+
+function sendQuickreply(recipientId, message) {
+  
+  try {
+    axios.post(
+      "https://graph.facebook.com/v7.0/me/messages",
+      {
+        recipient: { id: recipientId },
+        "messaging_type": "RESPONSE",
+        "message":{
+          "text": "Please Select one of the following:",
+          "quick_replies":[
+            {
+              "content_type":"text",
+              "title":"🚚 Delivery",
+              "payload":"delivery",
+            },{
+              "content_type":"text",
+              "title":"🛍️ Pick-up",
+              "payload":"pickup",
+            }
+          ]
+        }
       },
       {
         params: { access_token: process.env.ACCESS_TOKEN },
