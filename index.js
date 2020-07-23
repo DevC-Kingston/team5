@@ -85,6 +85,11 @@ const handlePostbackEvent = async (event) => {
       quickReply(userID, location);
       break;
 
+    case "pickup":
+      addID(userID, payload);
+      sendMessage(userID, { text: "location of item should go here" });
+      break;
+
     case "get_started":
       addID(userID, payload);
       message = get_started(first_name);
