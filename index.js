@@ -60,12 +60,11 @@ app.post("/webhook", (req, res) => {
       
       // Gets the message.entry.messaging is an array, but will only contain one message, hence index 0
       let webhook_event = entry.messaging[0];
-      const userID = webhook_event.sender.id;
-      searchids(userID);
+
+      searchids(webhook_event.sender.id);
 
       if (webhook_event.postback) {
-        let currentState = await handlePostbackEvent(webhook_event);
-        //update state in database 
+        handlePostbackEvent(webhook_event);
       }
       
 
@@ -83,49 +82,50 @@ app.post("/webhook", (req, res) => {
 });
 
 const handlePostbackEvent = async (event) => {
-  const { first_name } = await getUserPersonalInfo(event.sender.id);
+  let userID = event.sender.id;
   let payload = event.postback.payload;
-
+  const { first_name } = await getUserPersonalInfo(userID);
+  
   switch (payload) {
     case "get_started":
-      currentState = payload;
+      addID(userID, payload);
       message = get_started(first_name);
-      sendMessage(event.sender.id, message);
-      console.log("-----------> GET STARTED event");
+      sendMessage(userID, message);
+      console.log("GET STARTED EVENT");
       break;
 
     case "item_search":
-      currentState = payload;
+      addID(userID, payload);
       message = item_search(); //cant declare variable twice cause variable is 'case' scoped
-      sendMessage(event.sender.id, message);
+      sendMessage(userID, message);
       console.log("Item search postback event");
       break;
 
     case "food_search":
-      currentState = payload;
+      addID(userID, payload);
       message = {
         text:
           "Please enter the name of the food or ingredient you are searching for",
       };
-      sendMessage(event.sender.id, message);
+      sendMessage(userID, message);
       break;
 
     case "machine_search":
-      currentState = payload;
+      addID(userID, payload);
       message = {
         text:
           "Please enter the name of the appliance or machinery you are searching for",
       };
-      sendMessage(event.sender.id, message);
+      sendMessage(userID, message);
       break;
 
     case "fashion_search":
-      currentState = payload;
+      addID(userID, payload);
       message = {
         text:
           "Please enter the name of the clothing item you are searching for",
       };
-      sendMessage(event.sender.id, message);
+      sendMessage(userID, message);
       //maybe accept a picture for this and search similar options?
       break;
 
@@ -133,7 +133,7 @@ const handlePostbackEvent = async (event) => {
       console.log("---------> Postback Event");
     /**@todo do something here */
   }
-  return currentState;
+  return;
 };
 
 const handleMessageEvent = async (event, payload) => {
@@ -142,52 +142,49 @@ const handleMessageEvent = async (event, payload) => {
   // searchAppliance(event.message.text,event);
   // searchClothes(event.message.text,event);
   // searchFood(event.message.text,event);
-
-  const { first_name } = await getUserPersonalInfo(event.sender.id);
+  let userID = event.sender.id;
+  const { first_name } = await getUserPersonalInfo(userID);
   const greeting = firstTrait(event.message.nlp, "wit$greetings");
   // const thanks = firstTrait(event.message.nlp, "wit$thanks");
   // const bye = firstTrait(event.message.nlp, "wit$bye");
-  let item = event.message.text; //user message containing item ordered
+  let itemName = event.message.text; //user message containing item ordered
 
   if (greeting && greeting.confidence) {
-    currentState = "get_started";
+    addID(userID, payload);
     message = get_started(first_name);
-    sendMessage(event.sender.id, message);
-    return currentState;
+    sendMessage(userID, message);
   } else {
-    //send default message
+    console.log("TROUBLE DEH DEH")
   }
 
-  //fetch userid from database based on userID
-  //read the users currentState
-  //switch statement with current state
+ 
   console.log(`FROM HANDLE MESSAGE -> ${payload}`)
   switch (payload) {
     case "food_search":
-      currentState = "database_food";
-      //actually check database here
-      //then if found do below else print sorry message from function
-      sendQuickreply(recipientId, message);
+      addID(userID,"database_food");
+      searchFood(itemName,event);
+      //consider handling quick reply in search function
+     //sendQuickreply(userID, message);
       break;
 
     case "machine_search":
-      currentState = "database_machine";
-      //actually check database here
-      sendQuickreply(recipientId, message);
+      addID(userID,"database_machine");
+      searchAppliance(itemName,event);
+      //sendQuickreply(userID, message);
       break;
 
     case "fashion_search":
-      currentState = "database_fashion";
-      //actually check database here
-      sendQuickreply(recipientId, message);
+      addID(userID,"database_clothes");
+      searchClothes(itemName,event);
+      //sendQuickreply(recipientId);
       break;
     
     default:
       message = { text: `Your message was ${item}`};
-      sendMessage(event.sender.id, message);
+      sendMessage(userID, message);
   }
 
-  return currentState;
+  return;
 };
 
 async function getUserPersonalInfo(recipientId) {
@@ -225,7 +222,7 @@ function sendMessage(recipientId, message) {
   return;
 }
 
-function sendQuickreply(recipientId, message) {
+function sendQuickreply(recipientId) {
   
   try {
     axios.post(
@@ -383,7 +380,7 @@ function addID(uid,cs) {
   })
     .then((res) => {
       //
-      console.log("UPDATES STATE --->", res);
+      console.log("UPDATES STATE --->", res.data);
     })
     .catch((err) => {
       console.log("error in request", err);
