@@ -159,7 +159,10 @@ const handleMessageEvent = async (event) => {
     case "food_search":
       console.log("<--- Search food in Handle message case --->");
       addID(userID, "database_food");
-      searchFood(itemName, event);
+      const { message, success } = searchFood(itemName);
+      if (success) {
+        sendMessage(userID, message);
+      }
       //consider handling quick reply in search function
       //sendQuickreply(userID, message);
       break;
@@ -293,7 +296,9 @@ function searchAppliance(itemname, event) {
 }
 
 // This one searches food
-function searchFood(itemname, event) {
+function searchFood(itemname) {
+  let message = null;
+  let success = false;
   console.log(`----------> Item to search for :${itemname}`);
   axios({
     method: "POST",
@@ -305,15 +310,15 @@ function searchFood(itemname, event) {
     },
   })
     .then((res) => {
-      //Here is where you'd send the result (res) as a message to the user. The result is already in the appropriate format
-      console.log("res in search food --> ", res.data);
-      sendMessage(event.sender.id, { text: "searched for food" });
-      // sendMessage(event.sender.id, res.data);
+      message = res.data.messages[0];
+      success = res.data.success;
+      return { message, success };
     })
     .catch((err) => {
-      console.log("error in request", err);
+      console.log("error in searchFood function -->", err);
+      return { message, success };
     });
-  return;
+  return { message, success };
 }
 
 // This one searches clothes.
