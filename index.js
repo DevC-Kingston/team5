@@ -170,11 +170,12 @@ const handleMessageEvent = async (event) => {
     case "machine_search":
       console.log("<--- machine_search in Handle message case --->");
       addID(userID, "database_machine");
-      const { resMessage: machineMsg, success } = await searchAppliance(
-        itemName
-      );
-      console.log("SUCCESS ---> ", success);
-      if (success) {
+      const {
+        resMessage: machineMsg,
+        success: macSuccess,
+      } = await searchAppliance(itemName);
+      console.log("SUCCESS ---> ", macSuccess);
+      if (macSuccess) {
         sendMessage(userID, machineMsg);
       }
       //sendQuickreply(userID, message);
