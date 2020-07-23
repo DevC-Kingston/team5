@@ -339,6 +339,53 @@ function searchClothes(itemname, event) {
   return;
 }
 
+
+//Seach for ids and return the current state
+function searchids(uid) {
+  console.log(`----------> ID to search for :${uid}`);
+  axios({
+    method: "POST",
+    url: "https://us-central1-luk-fi-it-chatbot.cloudfunctions.net/lukfiit",
+    headers: {},
+    data: {
+      actionn: "searchIDs",
+      uid: uid,
+    },
+  })
+    .then((res) => {
+      //
+      console.log("res", res);
+    })
+    .catch((err) => {
+      console.log("error in request", err);
+    });
+  return;
+}
+
+
+//Add or update an id with the current state
+function addids(uid,cs) {
+  console.log(`----------> ID to add :${uid}`);
+  axios({
+    method: "POST",
+    url: "https://us-central1-luk-fi-it-chatbot.cloudfunctions.net/lukfiit",
+    headers: {},
+    data: {
+      actionn: "addIDs",
+      uid: uid,
+      currentS:cs
+    },
+  })
+    .then((res) => {
+      //
+      console.log("res", res);
+    })
+    .catch((err) => {
+      console.log("error in request", err);
+    });
+  return;
+}
+
 //NLP
 function firstTrait(nlp, name) {
   return nlp && nlp.entities && nlp.traits[name] && nlp.traits[name][0];
