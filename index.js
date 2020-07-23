@@ -2,7 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const axios = require("axios");
 const { get_started } = require("./src/templates/postbacks");
-const { deliveryReply } = require("./src/templates/quickReply");
+const { deliveryReply, locationReply } = require("./src/templates/quickReply");
 
 const app = express();
 
@@ -79,6 +79,12 @@ const handlePostbackEvent = async (event) => {
   const { first_name } = await getUserPersonalInfo(userID);
 
   switch (payload) {
+    case "delivery":
+      addID(userID, payload);
+      let location = locationReply();
+      quickReply(userID, location);
+      break;
+
     case "get_started":
       addID(userID, payload);
       message = get_started(first_name);
