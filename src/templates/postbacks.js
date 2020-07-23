@@ -1,4 +1,4 @@
-exports.get_started = () => {
+exports.get_started = (first_name) => {
   message = {
     attachment: {
       type: "template",
