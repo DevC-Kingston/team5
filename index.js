@@ -159,10 +159,10 @@ const handleMessageEvent = async (event) => {
       const { food, success: foodSuccess } = await searchFood(itemName);
       console.log("SUCCESS ---> ", foodSuccess);
       if (foodSuccess) {
-        // sendMessage(userID, {
-        //   text: `${itemName} was found for ${food.cost}`,
-        // });
-        let deliveryMessage = deliveryReply();
+        sendMessage(userID, {
+          text: `${itemName} was found for ${food.cost}`,
+        });
+        let deliveryMessage = await deliveryReply();
         sendQuickreply(userID, deliveryMessage);
       }
       //consider handling quick reply in search function
