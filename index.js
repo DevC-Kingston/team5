@@ -55,9 +55,9 @@ app.post("/webhook", (req, res) => {
   // Checks this is an event from a page subscription
   if (body.object === "page") {
     // Iterates over each entry - there may be multiple if batched
-    body.entry.forEach(async function (entry){
+    body.entry.forEach(async function (entry) {
       res.status(200).send("EVENT_RECEIVED");
-      
+
       // Gets the message.entry.messaging is an array, but will only contain one message, hence index 0
       let webhook_event = entry.messaging[0];
 
@@ -66,7 +66,6 @@ app.post("/webhook", (req, res) => {
       if (webhook_event.postback) {
         handlePostbackEvent(webhook_event);
       }
-      
 
       if (webhook_event.message && webhook_event.message.text) {
         handleMessageEvent(webhook_event);
@@ -74,7 +73,6 @@ app.post("/webhook", (req, res) => {
     });
 
     // Returns a '200 OK' response to all requests
-    
   } else {
     // Returns a '404 Not Found' if event is not from a page subscription
     res.sendStatus(404);
@@ -85,7 +83,7 @@ const handlePostbackEvent = async (event) => {
   let userID = event.sender.id;
   let payload = event.postback.payload;
   const { first_name } = await getUserPersonalInfo(userID);
-  
+
   switch (payload) {
     case "get_started":
       addID(userID, payload);
@@ -138,7 +136,7 @@ const handlePostbackEvent = async (event) => {
 
 const handleMessageEvent = async (event) => {
   console.log("Message received Event");
-  
+
   // searchAppliance(event.message.text,event);
   // searchClothes(event.message.text,event);
   // searchFood(event.message.text,event);
@@ -154,31 +152,31 @@ const handleMessageEvent = async (event) => {
     message = get_started(first_name);
     sendMessage(userID, message);
   }
- 
+
   let payload = searchids(userID);
 
   console.log(`FROM HANDLE MESSAGE -> ${payload}`);
 
   switch (payload) {
     case "food_search":
-      addID(userID,"database_food");
-      searchFood(itemName,event);
+      addID(userID, "database_food");
+      searchFood(itemName, event);
       //consider handling quick reply in search function
       //sendQuickreply(userID, message);
       break;
 
     case "machine_search":
-      addID(userID,"database_machine");
-      searchAppliance(itemName,event);
+      addID(userID, "database_machine");
+      searchAppliance(itemName, event);
       //sendQuickreply(userID, message);
       break;
 
     case "fashion_search":
-      addID(userID,"database_clothes");
-      searchClothes(itemName,event);
+      addID(userID, "database_clothes");
+      searchClothes(itemName, event);
       //sendQuickreply(recipientId);
       break;
-    
+
     default:
       // message = { text: "Please choose one of the following options"};
       // sendMessage(userID, message);
@@ -198,7 +196,6 @@ async function getUserPersonalInfo(recipientId) {
 
 // generic function sending messages
 function sendMessage(recipientId, message) {
-  
   try {
     axios.post(
       "https://graph.facebook.com/v7.0/me/messages",
@@ -224,27 +221,27 @@ function sendMessage(recipientId, message) {
 }
 
 function sendQuickreply(recipientId) {
-  
   try {
     axios.post(
       "https://graph.facebook.com/v7.0/me/messages",
       {
         recipient: { id: recipientId },
-        "messaging_type": "RESPONSE",
-        "message":{
-          "text": "Please Select one of the following:",
-          "quick_replies":[
+        messaging_type: "RESPONSE",
+        message: {
+          text: "Please Select one of the following:",
+          quick_replies: [
             {
-              "content_type":"text",
-              "title":"🚚 Delivery",
-              "payload":"delivery",
-            },{
-              "content_type":"text",
-              "title":"🛍️ Pick-up",
-              "payload":"pickup",
-            }
-          ]
-        }
+              content_type: "text",
+              title: "🚚 Delivery",
+              payload: "delivery",
+            },
+            {
+              content_type: "text",
+              title: "🛍️ Pick-up",
+              payload: "pickup",
+            },
+          ],
+        },
       },
       {
         params: { access_token: process.env.ACCESS_TOKEN },
@@ -337,7 +334,6 @@ function searchClothes(itemname, event) {
   return;
 }
 
-
 //Seach for ids and return the current state
 function searchids(uid) {
   console.log(`----------> ID to search for :${uid}`);
@@ -347,17 +343,17 @@ function searchids(uid) {
     headers: {},
     data: {
       actionn: "searchIDs",
-      uid: uid,
+      uid: uid.toString(),
     },
   })
     .then((res) => {
       console.log("THIS IS THE SEARCH ID FUNCTION:");
-      if(res.data == "User ID not found"){
+      if (res.data == "User ID not found") {
         console.log(`NOT FOUND -> ${res.data}`);
-        addID(uid,'get_started');
-      }else{
+        addID(uid, "get_started");
+      } else {
         console.log(`FOUND -> ${res.data}`);
-        return res.data; 
+        return res.data;
       }
     })
     .catch((err) => {
@@ -366,9 +362,8 @@ function searchids(uid) {
   return res.data;
 }
 
-
 //Add or update an id with the current state
-function addID(uid,cs) {
+function addID(uid, cs) {
   console.log(`----------> ID to add :${uid}`);
   axios({
     method: "POST",
@@ -377,7 +372,7 @@ function addID(uid,cs) {
     data: {
       actionn: "addIDs",
       uid: uid,
-      currentS:cs
+      currentS: cs,
     },
   })
     .then((res) => {
@@ -394,4 +389,3 @@ function addID(uid,cs) {
 function firstTrait(nlp, name) {
   return nlp && nlp.entities && nlp.traits[name] && nlp.traits[name][0];
 }
-
