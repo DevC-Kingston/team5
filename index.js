@@ -55,6 +55,10 @@ app.post("/webhook", (req, res) => {
       // Gets the message.entry.messaging is an array, but will only contain one message, hence index 0
       let webhook_event = entry.messaging[0];
 
+      console.log("------------------------------------------------------");
+      console.log("ENTIRE MESSAE", webhook_event);
+      console.log("------------------------------------------------------");
+
       await searchids(webhook_event.sender.id);
 
       if (webhook_event.postback) {
@@ -65,9 +69,9 @@ app.post("/webhook", (req, res) => {
         handleMessageEvent(webhook_event);
       }
 
-      if (webhook_event.message && webhook_event.message.quick_replies[0]) {
-        handleQuickReply(webhook_event.message.quickReply[0]);
-      }
+      // if (webhook_event.message && webhook_event.message.quick_replies[0]) {
+      //   handleQuickReply(webhook_event.message.quickReply[0]);
+      // }
     });
 
     // Returns a '200 OK' response to all requests
