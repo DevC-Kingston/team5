@@ -153,10 +153,7 @@ const handleMessageEvent = async (event, payload) => {
     addID(userID, payload);
     message = get_started(first_name);
     sendMessage(userID, message);
-  } else {
-    console.log("TROUBLE DEH DEH")
   }
-
  
   console.log(`FROM HANDLE MESSAGE -> ${payload}`)
   switch (payload) {
@@ -180,7 +177,7 @@ const handleMessageEvent = async (event, payload) => {
       break;
     
     default:
-      message = { text: `Your message was ${item}`};
+      message = { text: `Your message was ${itemName}`};
       sendMessage(userID, message);
   }
 
