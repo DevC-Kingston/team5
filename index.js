@@ -383,7 +383,7 @@ function addID(uid, cs) {
     headers: {},
     data: {
       actionn: "addIDs",
-      uid: uid,
+      uid: uid.toString(),
       currentS: cs,
     },
   })
