@@ -1,4 +1,4 @@
-exports.item_search = () => {
+exports.get_started = () => {
   message = {
     attachment: {
       type: "template",
@@ -6,9 +6,11 @@ exports.item_search = () => {
         template_type: "generic",
         elements: [
           {
-            title: "Item Search Menu",
-            subtitle:
-              "Ah, searching for an item I see. Choose one of the following",
+            title: `Hi there ${first_name} ! 👋`,
+            subtitle: `How may I assist?`,
+            // title: "Item Search Menu",
+            // subtitle:
+            //   "Ah, searching for an item I see. Choose one of the following",
             buttons: [
               {
                 type: "postback",
@@ -35,38 +37,38 @@ exports.item_search = () => {
   return message;
 };
 
-exports.get_started = (first_name) => {
-  message = {
-    attachment: {
-      type: "template",
-      payload: {
-        template_type: "generic",
-        elements: [
-          {
-            title: `Hi there ${first_name} ! 👋`,
-            subtitle: `How may I assist?`,
-            buttons: [
-              {
-                type: "postback",
-                title: "I want to Order food",
-                payload: "food",
-              },
-              {
-                type: "postback",
-                title: "I want to get some Groceries",
-                payload: "grocery",
-              },
-              {
-                type: "postback",
-                title: "I'm looking for something?",
-                payload: "item_search",
-              },
-            ],
-          },
-        ],
-      },
-    },
-  };
+// exports.get_started = (first_name) => {
+//   message = {
+//     attachment: {
+//       type: "template",
+//       payload: {
+//         template_type: "generic",
+//         elements: [
+//           {
+//             title: `Hi there ${first_name} ! 👋`,
+//             subtitle: `How may I assist?`,
+//             buttons: [
+//               {
+//                 type: "postback",
+//                 title: "I want to Order food",
+//                 payload: "food",
+//               },
+//               {
+//                 type: "postback",
+//                 title: "I want to get some Groceries",
+//                 payload: "grocery",
+//               },
+//               {
+//                 type: "postback",
+//                 title: "I'm looking for something?",
+//                 payload: "item_search",
+//               },
+//             ],
+//           },
+//         ],
+//       },
+//     },
+//   };
 
-  return message;
-};
+//   return message;
+// };

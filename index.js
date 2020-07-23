@@ -1,7 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 const axios = require("axios");
-const { get_started, item_search } = require("./src/templates/postbacks");
+const { get_started } = require("./src/templates/postbacks");
 
 const app = express();
 
@@ -42,7 +42,6 @@ app.get("/webhook", (req, res) => {
 
 let converstionStates = [
   "getting_started",
-  "item_search",
   "food_search",
   "machine_search",
   "fashion_search",
@@ -90,13 +89,6 @@ const handlePostbackEvent = async (event) => {
       message = get_started(first_name);
       sendMessage(userID, message);
       console.log("GET STARTED EVENT");
-      break;
-
-    case "item_search":
-      addID(userID, payload);
-      message = item_search(); //cant declare variable twice cause variable is 'case' scoped
-      sendMessage(userID, message);
-      console.log("Item search postback event");
       break;
 
     case "food_search":
