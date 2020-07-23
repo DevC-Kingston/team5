@@ -156,13 +156,10 @@ const handleMessageEvent = async (event) => {
     case "food_search":
       console.log("<--- Search food in Handle message case --->");
       addID(userID, "database_food");
-      const { resMessage: foodMsg, success: foodSuccess } = await searchFood(
-        itemName
-      );
+      const { food, success: foodSuccess } = await searchFood(itemName);
       console.log("SUCCESS ---> ", foodSuccess);
       if (foodSuccess) {
         sendMessage(userID, {
-          text: `${itemName} was found for ${foodProduct.cost}`,
           text: `${itemName} was found for ${food.cost}`,
         });
         let deliveryMessage = deliveryReply();
