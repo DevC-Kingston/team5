@@ -297,7 +297,7 @@ function searchAppliance(itemname, event) {
 
 // This one searches food
 function searchFood(itemname) {
-  let message = null;
+  let resMessage = null;
   let success = false;
   console.log(`----------> Item to search for :${itemname}`);
   axios({
@@ -310,15 +310,15 @@ function searchFood(itemname) {
     },
   })
     .then((res) => {
-      message = res.data.messages[0];
+      resMessage = res.data.messages[0];
       success = res.data.success;
-      return { message, success };
+      return { resMessage, success };
     })
     .catch((err) => {
       console.log("error in searchFood function -->", err);
-      return { message, success };
+      return { resMessage, success };
     });
-  return { message, success };
+  return { resMessage, success };
 }
 
 // This one searches clothes.
