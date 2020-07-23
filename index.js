@@ -161,7 +161,10 @@ const handleMessageEvent = async (event) => {
       );
       console.log("SUCCESS ---> ", foodSuccess);
       if (foodSuccess) {
-        sendMessage(userID, foodMsg);
+        sendMessage(userID, {
+          text: `${itemName} was found for ${foodProduct.cost}`,
+          text: `${itemName} was found for ${food.cost}`,
+        });
         let deliveryMessage = deliveryReply();
         sendQuickreply(deliveryMessage);
       }
@@ -178,7 +181,9 @@ const handleMessageEvent = async (event) => {
       } = await searchAppliance(itemName);
       console.log("SUCCESS ---> ", macSuccess);
       if (macSuccess) {
-        sendMessage(userID, machineMsg);
+        sendMessage(userID, {
+          text: `${itemName} was found for ${appliance.cost}`,
+        });
       }
       //sendQuickreply(userID, message);
       break;
