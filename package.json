@@ -4,7 +4,6 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "preinstall": "node gcpSetup.js",
     "start": "node index.js"
   },
   "keywords": [],
