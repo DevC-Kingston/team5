@@ -150,15 +150,15 @@ const handleMessageEvent = async (event) => {
   let itemName = event.message.text; //user message containing item ordered
 
   if (greeting && greeting.confidence) {
-    addID(userID, payload);
+    addID(userID, "get_started");
     message = get_started(first_name);
     sendMessage(userID, message);
   }
  
   let payload = searchids(userID);
 
-  console.log(`FROM HANDLE MESSAGE -> ${payload}`)
-  
+  console.log(`FROM HANDLE MESSAGE -> ${payload}`);
+
   switch (payload) {
     case "food_search":
       addID(userID,"database_food");
