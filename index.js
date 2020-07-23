@@ -170,8 +170,10 @@ const handleMessageEvent = async (event) => {
       break;
 
     default:
-      // message = { text: "Please choose one of the following options"};
-      // sendMessage(userID, message);
+      addID(userID, "get_started");
+      sendMessage(userID, { text: "I couldn't understand ur request" });
+      message = get_started(first_name);
+      return sendMessage(userID, message);
       break;
   }
 
