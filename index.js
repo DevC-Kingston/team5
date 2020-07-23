@@ -139,6 +139,8 @@ const handleMessageEvent = async (event) => {
   // const bye = firstTrait(event.message.nlp, "wit$bye");
   let itemName = event.message.text; //user message containing item ordered
 
+  console.log("EVENT --> ", event.message.nlp);
+
   if (greeting && greeting.confidence) {
     addID(userID, "get_started");
     message = get_started(first_name);
@@ -174,7 +176,6 @@ const handleMessageEvent = async (event) => {
       sendMessage(userID, { text: "I couldn't understand ur request" });
       message = get_started(first_name);
       return sendMessage(userID, message);
-      break;
   }
 
   return;
