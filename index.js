@@ -151,7 +151,7 @@ const handleMessageEvent = async (event) => {
     return sendMessage(userID, message);
   }
 
-  let payload = searchids(userID);
+  let payload = await searchids(userID);
 
   console.log(`FROM HANDLE MESSAGE -> ${payload}`);
 
@@ -388,11 +388,12 @@ function addID(uid, cs) {
     },
   })
     .then((res) => {
-      //
       console.log("UPDATES STATE --->", res.data);
+      return { uid, success: true };
     })
     .catch((err) => {
       console.log("error in request", err);
+      return { uid: null, success: false };
     });
   return;
 }
