@@ -69,7 +69,7 @@ app.post("/webhook", (req, res) => {
       
 
       if (webhook_event.message && webhook_event.message.text) {
-        handleMessageEvent(webhook_event, payload);
+        handleMessageEvent(webhook_event);
       }
     });
 
@@ -136,7 +136,7 @@ const handlePostbackEvent = async (event) => {
   return;
 };
 
-const handleMessageEvent = async (event, payload) => {
+const handleMessageEvent = async (event) => {
   console.log("Message received Event");
   
   // searchAppliance(event.message.text,event);
@@ -155,13 +155,16 @@ const handleMessageEvent = async (event, payload) => {
     sendMessage(userID, message);
   }
  
+  let payload = searchids(userID);
+
   console.log(`FROM HANDLE MESSAGE -> ${payload}`)
+  
   switch (payload) {
     case "food_search":
       addID(userID,"database_food");
       searchFood(itemName,event);
       //consider handling quick reply in search function
-     //sendQuickreply(userID, message);
+      //sendQuickreply(userID, message);
       break;
 
     case "machine_search":
@@ -177,8 +180,9 @@ const handleMessageEvent = async (event, payload) => {
       break;
     
     default:
-      message = { text: `Your message was ${itemName}`};
-      sendMessage(userID, message);
+      // message = { text: "Please choose one of the following options"};
+      // sendMessage(userID, message);
+      break;
   }
 
   return;
@@ -352,7 +356,8 @@ function searchids(uid) {
         console.log(`NOT FOUND -> ${res.data}`);
         addID(uid,'get_started');
       }else{
-        console.log(`FOUND -> ${res.data}`)
+        console.log(`FOUND -> ${res.data}`);
+        return res.data; 
       }
     })
     .catch((err) => {
