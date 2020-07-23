@@ -14,29 +14,28 @@ Luk Fi It : was proposed to reduce the number of places that we visit, by locati
 
 
 ## List your Chatbot’s features and use cases
-1. 1
-1. 2
+1. LOOKING : luk fi it would provide users with direction and location to the product they are searching for
+2. Display : an image of the product once its found is sent to the user for confirmation of match to what the user is looking for
 
 
 ## How we built it
 Tech Stack & Documentation:
-* 1
-* 2
+*Chatbot - We created the chatbot using FB messenger with node js and channeled to Facebook messenger utilizing Facebook GraphAPI.We integrated Wit.ai as our NLP and product entity training programmatically from the dashboard.
 
 
 ## Challenges we ran into
-1. Challenge 1
-1. Challenge 2
+1. linkning the google cloud platform to allow the user to upload images using the vision api. This caused use issued with image quality when user tried to view the retrieved images.
+2. Linking the database of choice "firebase" to our chatbot so we could pool the inventory from the different vendors that would be registered with us and run the queries that would pull the item the user is looking for. 
  
  
 ## Accomplishments that we're proud of
-* Accomplishment 1
-* Accomplishment 2
+* We are proud of joining our first project to the bootcamp for the first time. We have no experience before and we learned as we went along, we have combined all our individual traits and knowledge areas to come together to develop this using some of the most recent and advanced software development tools, services, and frameworks out there to create a platform with an impact in to.
+
 
 
 ## What we learned
-* Learning 1
-* Learning 2
+* Be patient and that with perserverance we can over come any errors during code
+* We have learned about the complexity in databasing. We have done research on how to effectively use databases as well as Messenger API to improve or bot's functionality.
 
 
 ## What's next for “Luk fi it”
@@ -46,8 +45,7 @@ Product Roadmap - next features for example
 
 
 ## Built With - provide the tech stack used 
-* example1
-* example2
+* node.js, firebase 
 
 
 ## Try it out
