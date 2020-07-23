@@ -2,6 +2,7 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const axios = require("axios");
 const { get_started } = require("./src/templates/postbacks");
+const { deliveryReply } = require("./src/templates/quickReply");
 
 const app = express();
 
@@ -40,12 +41,6 @@ app.get("/webhook", (req, res) => {
   }
 });
 
-let converstionStates = [
-  "getting_started",
-  "food_search",
-  "machine_search",
-  "fashion_search",
-];
 let message;
 // Creates the endpoint for our webhook
 app.post("/webhook", (req, res) => {
@@ -165,6 +160,8 @@ const handleMessageEvent = async (event) => {
       console.log("SUCCESS ---> ", success);
       if (success) {
         sendMessage(userID, foodMsg);
+        let deliveryMessage = deliveryReply();
+        sendQuickreply(deliveryMessage);
       }
       //consider handling quick reply in search function
       //sendQuickreply(userID, message);
@@ -173,9 +170,11 @@ const handleMessageEvent = async (event) => {
     case "machine_search":
       console.log("<--- machine_search in Handle message case --->");
       addID(userID, "database_machine");
-      const { resMessage: machineMsg, success } = await searchAppliance(itemName);
+      const { resMessage: machineMsg, success } = await searchAppliance(
+        itemName
+      );
       console.log("SUCCESS ---> ", success);
-      if (success){
+      if (success) {
         sendMessage(userID, machineMsg);
       }
       //sendQuickreply(userID, message);
