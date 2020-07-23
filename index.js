@@ -161,14 +161,10 @@ const handleMessageEvent = async (event) => {
     case "food_search":
       console.log("<--- Search food in Handle message case --->");
       addID(userID, "database_food");
-      const { food, success: foodSuccess } = await searchFood(
-        itemName.toLowerCase()
-      );
-      console.log("SUCCESS ---> ", foodSuccess);
-      if (foodSuccess) {
-        sendMessage(userID, {
-          text: `${itemName} was found for ${food.cost}`,
-        });
+      const { resMessage: foodMsg, success } = await searchFood(itemName);
+      console.log("SUCCESS ---> ", success);
+      if (success) {
+        sendMessage(userID, foodMsg);
       }
       //consider handling quick reply in search function
       //sendQuickreply(userID, message);
@@ -177,13 +173,10 @@ const handleMessageEvent = async (event) => {
     case "machine_search":
       console.log("<--- machine_search in Handle message case --->");
       addID(userID, "database_machine");
-      const { appliance, success: machSuccess } = await searchAppliance(
-        itemName
-      );
-      if (machSuccess) {
-        sendMessage(userID, {
-          text: `${itemName} was found for ${appliance.cost}`,
-        });
+      const { resMessage: machineMsg, success } = await searchAppliance(itemName);
+      console.log("SUCCESS ---> ", success);
+      if (success){
+        sendMessage(userID, machineMsg);
       }
       //sendQuickreply(userID, message);
       break;
@@ -191,12 +184,10 @@ const handleMessageEvent = async (event) => {
     case "fashion_search":
       console.log("<--- fashion_search in Handle message case --->");
       addID(userID, "database_fashion");
-      const { clothes, success } = await searchClothes(itemName);
+      const { resMessage: fashionMsg, success } = await searchClothes(itemName);
       console.log("SUCCESS ---> ", success);
       if (success) {
-        sendMessage(userID, {
-          text: `${itemName} was found for ${clothes.cost}`,
-        });
+        sendMessage(userID, fashionMsg);
       }
       //sendQuickreply(recipientId);
       break;
@@ -245,28 +236,14 @@ function sendMessage(recipientId, message) {
   return;
 }
 
-function sendQuickreply(recipientId) {
+function sendQuickreply(recipientId, message) {
   try {
     axios.post(
       "https://graph.facebook.com/v7.0/me/messages",
       {
         recipient: { id: recipientId },
         messaging_type: "RESPONSE",
-        message: {
-          text: "Please Select one of the following:",
-          quick_replies: [
-            {
-              content_type: "text",
-              title: "🚚 Delivery",
-              payload: "delivery",
-            },
-            {
-              content_type: "text",
-              title: "🛍️ Pick-up",
-              payload: "pickup",
-            },
-          ],
-        },
+        message: message,
       },
       {
         params: { access_token: process.env.ACCESS_TOKEN },
@@ -288,7 +265,7 @@ function sendQuickreply(recipientId) {
 //Functions for searching the database.
 // This one searches appliances
 async function searchAppliance(itemname) {
-  let appliance = null;
+  let resMessage = null;
   let success = false;
   console.log(`----------> Item to search for :${itemname}`);
   const req = await axios({
@@ -301,15 +278,28 @@ async function searchAppliance(itemname) {
     },
   });
   const res = await req;
-  appliance = res.data.product;
+  resMessage = res.data.messages[0];
   success = res.data.success;
 
-  return { appliance, success };
+  return { resMessage, success };
+  //   .then((res) => {
+  //     //Here is where you'd send the result (res) as a message to the user. The result is already in the appropriate format
+  //     //ie. the result is in this format:
+  //     //res {
+  //     //messages: [ {text: 'Nutribullet 12 PC🔌 \n' +'\n' +  '📌 You can find it at this location:123 Constant Spring Rd\n' +  '\n' +  ' 💵 Cost:10,500 JMD'  } ]
+  //     //}
+  //     console.log("res", res.data);
+  //     sendMessage(event.sender.id, res.data);
+  //   })
+  //   .catch((err) => {
+  //     console.log("error in request", err);
+  //   });
+  // return;
 }
 
 // This one searches food
 async function searchFood(itemname) {
-  let food = null;
+  let resMessage = null;
   let success = false;
   console.log(`----------> Item to search for :${itemname}`);
   const req = await axios({
@@ -322,15 +312,25 @@ async function searchFood(itemname) {
     },
   });
   const res = await req;
-  food = res.data.product;
+  resMessage = res.data.messages[0];
   success = res.data.success;
 
-  return { food, success };
+  return { resMessage, success };
+  //     .then((res) => {
+  //       resMessage = res.data.messages[0];
+  //       success = res.data.success;
+  //       return { resMessage, success };
+  //     })
+  //     .catch((err) => {
+  //       console.log("error in searchFood function -->", err);
+  //       return { resMessage, success };
+  //     });
+  //   return { resMessage, success };
 }
 
 // This one searches clothes.
 async function searchClothes(itemname) {
-  let clothes = null;
+  let resMessage = null;
   let success = false;
   console.log(`----------> Item to search for :${itemname}`);
   const req = await axios({
@@ -343,10 +343,19 @@ async function searchClothes(itemname) {
     },
   });
   const res = await req;
-  clothes = res.data.product;
+  resMessage = res.data.messages[0];
   success = res.data.success;
 
   return { resMessage, success };
+  //   .then((res) => {
+  //     //Here is where you'd send the result (res) as a message to the user. The result is already in the appropriate format
+  //     console.log("res", res.data);
+  //     sendMessage(event.sender.id, res.data);
+  //   })
+  //   .catch((err) => {
+  //     console.log("error in request", err);
+  //   });
+  // return;
 }
 
 //Seach for ids and return the current state
@@ -364,6 +373,21 @@ async function searchids(uid) {
   const data = await res.data;
 
   return data;
+  //   .then((res) => {
+  //     console.log("THIS IS THE SEARCH ID FUNCTION:");
+  //     if (res.data == "User ID not found") {
+  //       console.log(`NOT FOUND -> ${res.data}`);
+  //       return addID(uid, "get_started");
+  //     } else {
+  //       console.log(`FOUND -> ${res.data}`);
+  //       return res.data;
+  //     }
+  //   })
+  //   .catch((err) => {
+  //     console.log("error in request -->", err.headers);
+  //   });
+
+  // return;
 }
 
 //Add or update an id with the current state
