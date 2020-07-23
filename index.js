@@ -60,13 +60,14 @@ app.post("/webhook", (req, res) => {
       
       // Gets the message.entry.messaging is an array, but will only contain one message, hence index 0
       let webhook_event = entry.messaging[0];
-
-      //user need to be stored in the database so we can track the conversational state
+      const userID = event.sender.id;
+      //If user not in database then set currentState to get_started
 
       if (webhook_event.postback) {
-        let payload = await handlePostbackEvent(webhook_event);
+        let currentState = await handlePostbackEvent(webhook_event);
+        //update state in database 
       }
-      console.log(`Hook Received -> ${payload}`)
+      
 
       if (webhook_event.message && webhook_event.message.text) {
         handleMessageEvent(webhook_event, payload);
@@ -132,27 +133,27 @@ const handlePostbackEvent = async (event) => {
       console.log("---------> Postback Event");
     /**@todo do something here */
   }
-  return payload;
+  return currentState;
 };
 
 const handleMessageEvent = async (event, payload) => {
   console.log("Message received Event");
-  const userID = event.sender.id;
+  
   // searchAppliance(event.message.text,event);
   // searchClothes(event.message.text,event);
   // searchFood(event.message.text,event);
 
   const { first_name } = await getUserPersonalInfo(event.sender.id);
   const greeting = firstTrait(event.message.nlp, "wit$greetings");
-  const thanks = firstTrait(event.message.nlp, "wit$thanks");
-  const bye = firstTrait(event.message.nlp, "wit$bye");
+  // const thanks = firstTrait(event.message.nlp, "wit$thanks");
+  // const bye = firstTrait(event.message.nlp, "wit$bye");
   let item = event.message.text; //user message containing item ordered
 
   if (greeting && greeting.confidence) {
-    currentState = payload;
+    currentState = "get_started";
     message = get_started(first_name);
     sendMessage(event.sender.id, message);
-    return payload;
+    return currentState;
   } else {
     //send default message
   }
@@ -186,7 +187,7 @@ const handleMessageEvent = async (event, payload) => {
       sendMessage(event.sender.id, message);
   }
 
-  return;
+  return currentState;
 };
 
 async function getUserPersonalInfo(recipientId) {
