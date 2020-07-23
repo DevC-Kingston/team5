@@ -276,7 +276,7 @@ async function searchAppliance(itemname) {
     headers: {},
     data: {
       actionn: "checkitemappliance",
-      item: itemname.tolowerCase(),
+      item: itemname.toLowerCase(),
     },
   });
   const res = await req;
@@ -297,7 +297,7 @@ async function searchFood(itemname) {
     headers: {},
     data: {
       actionn: "checkitemfood",
-      item: itemname.tolowerCase(),
+      item: itemname.toLowerCase(),
     },
   });
   const res = await req;
@@ -318,7 +318,7 @@ async function searchClothes(itemname) {
     headers: {},
     data: {
       actionn: "checkitemclothes",
-      item: itemname.tolowerCase(),
+      item: itemname.toLowerCase(),
     },
   });
   const res = await req;
