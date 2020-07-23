@@ -65,8 +65,8 @@ app.post("/webhook", (req, res) => {
         handleMessageEvent(webhook_event);
       }
 
-      if(webhook_event.message.quickReply[0]){
-        handleQuickReply(webhook_event.message.quickReply[0])
+      if (webhook_event.message.quickReply[0]) {
+        handleQuickReply(webhook_event.message.quickReply[0]);
       }
     });
 
@@ -77,8 +77,8 @@ app.post("/webhook", (req, res) => {
   }
 });
 
-const handleQuickReply=(event)=>{
-  console.log("EVENT QUICK REPLY", event)
+const handleQuickReply = async (event) => {
+  console.log("EVENT QUICK REPLY", event);
   let userID = event.sender.id;
   let payload = event.postback.payload;
   const { first_name } = await getUserPersonalInfo(userID);
@@ -95,11 +95,11 @@ const handleQuickReply=(event)=>{
       sendMessage(userID, { text: "location of item should go here" });
       break;
 
-      default:
-        console.log("---------> Postback Event");
-      /**@todo do something here */
+    default:
+      console.log("---------> Postback Event");
+    /**@todo do something here */
   }
-}
+};
 
 const handlePostbackEvent = async (event) => {
   let userID = event.sender.id;
