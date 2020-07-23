@@ -204,15 +204,16 @@ const handleMessageEvent = async (event) => {
     case "machine_search":
       console.log("<--- machine_search in Handle message case --->");
       addID(userID, "database_machine");
-      const {
-        resMessage: machineMsg,
-        success: macSuccess,
-      } = await searchAppliance(itemName);
+      const { appliance, success: macSuccess } = await searchAppliance(
+        itemName
+      );
       console.log("SUCCESS ---> ", macSuccess);
       if (macSuccess) {
         sendMessage(userID, {
           text: `${itemName} was found for ${appliance.cost}`,
         });
+        let deliveryMessage = await deliveryReply();
+        sendQuickreply(userID, deliveryMessage);
       }
       //sendQuickreply(userID, message);
       break;
@@ -220,10 +221,14 @@ const handleMessageEvent = async (event) => {
     case "fashion_search":
       console.log("<--- fashion_search in Handle message case --->");
       addID(userID, "database_fashion");
-      const { resMessage: fashionMsg, success } = await searchClothes(itemName);
+      const { clothes, success } = await searchClothes(itemName);
       console.log("SUCCESS ---> ", success);
       if (success) {
-        sendMessage(userID, fashionMsg);
+        sendMessage(userID, {
+          text: `${itemName} was found for ${clothes.cost}`,
+        });
+        let deliveryMessage = await deliveryReply();
+        sendQuickreply(userID, deliveryMessage);
       }
       //sendQuickreply(recipientId);
       break;
