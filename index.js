@@ -61,7 +61,7 @@ app.post("/webhook", (req, res) => {
       // Gets the message.entry.messaging is an array, but will only contain one message, hence index 0
       let webhook_event = entry.messaging[0];
 
-      searchids(webhook_event.sender.id.toString);
+      searchids(webhook_event.sender.id);
 
       if (webhook_event.postback) {
         handlePostbackEvent(webhook_event);
@@ -80,7 +80,7 @@ app.post("/webhook", (req, res) => {
 });
 
 const handlePostbackEvent = async (event) => {
-  let userID = event.sender.id.toString;
+  let userID = event.sender.id;
   let payload = event.postback.payload;
   const { first_name } = await getUserPersonalInfo(userID);
 
@@ -140,7 +140,7 @@ const handleMessageEvent = async (event) => {
   // searchAppliance(event.message.text,event);
   // searchClothes(event.message.text,event);
   // searchFood(event.message.text,event);
-  let userID = event.sender.id.toString;
+  let userID = event.sender.id;
   const { first_name } = await getUserPersonalInfo(userID);
   const greeting = firstTrait(event.message.nlp, "wit$greetings");
   // const thanks = firstTrait(event.message.nlp, "wit$thanks");
@@ -357,7 +357,7 @@ function searchids(uid) {
       }
     })
     .catch((err) => {
-      console.log("error in request -->", err);
+      console.log("error in request -->", err.headers);
     });
 
   return;
