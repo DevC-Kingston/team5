@@ -92,6 +92,7 @@ const handlePostbackEvent = async (event) => {
       break;
 
     case "food_search":
+      console.log("<--- Search food POSTBACK case --->");
       addID(userID, payload);
       message = {
         text:
@@ -101,6 +102,8 @@ const handlePostbackEvent = async (event) => {
       break;
 
     case "machine_search":
+      console.log("<--- machine Search food POSTBACK case --->");
+
       addID(userID, payload);
       message = {
         text:
@@ -110,6 +113,7 @@ const handlePostbackEvent = async (event) => {
       break;
 
     case "fashion_search":
+      console.log("<--- fashion_search POSTBACK case --->");
       addID(userID, payload);
       message = {
         text:
@@ -153,6 +157,7 @@ const handleMessageEvent = async (event) => {
 
   switch (payload) {
     case "food_search":
+      console.log("<--- Search food in Handle message case --->");
       addID(userID, "database_food");
       searchFood(itemName, event);
       //consider handling quick reply in search function
@@ -160,12 +165,16 @@ const handleMessageEvent = async (event) => {
       break;
 
     case "machine_search":
+      console.log("<--- machine_search in Handle message case --->");
+
       addID(userID, "database_machine");
       searchAppliance(itemName, event);
       //sendQuickreply(userID, message);
       break;
 
     case "fashion_search":
+      console.log("<--- fashion_search in Handle message case --->");
+
       addID(userID, "database_clothes");
       searchClothes(itemName, event);
       //sendQuickreply(recipientId);
