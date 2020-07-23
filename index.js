@@ -61,7 +61,7 @@ app.post("/webhook", (req, res) => {
       // Gets the message.entry.messaging is an array, but will only contain one message, hence index 0
       let webhook_event = entry.messaging[0];
       const userID = event.sender.id;
-      //If user not in database then set currentState to get_started
+      searchids(userID);
 
       if (webhook_event.postback) {
         let currentState = await handlePostbackEvent(webhook_event);
