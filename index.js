@@ -172,23 +172,29 @@ const handleMessageEvent = async (event) => {
 
     case "machine_search":
       console.log("<--- machine_search in Handle message case --->");
-
       addID(userID, "database_machine");
-      searchAppliance(itemName, event);
+      const { resMessage, success } = await searchAppliance(itemName);
+      console.log("SUCCESS ---> ", success);
+      if (success){
+        sendMessage(userID, resMessage);
+      }
       //sendQuickreply(userID, message);
       break;
 
     case "fashion_search":
       console.log("<--- fashion_search in Handle message case --->");
-
-      addID(userID, "database_clothes");
-      searchClothes(itemName, event);
+      addID(userID, "database_fashion");
+      const { resMessage, success } = await searchClothes(itemName);
+      console.log("SUCCESS ---> ", success);
+      if (success) {
+        sendMessage(userID, resMessage);
+      }
       //sendQuickreply(recipientId);
       break;
 
     default:
       addID(userID, "get_started");
-      sendMessage(userID, { text: "I couldn't understand ur request" });
+      sendMessage(userID, { text: "I couldn't understand your request" });
       message = get_started(first_name);
       return sendMessage(userID, message);
   }
@@ -272,9 +278,11 @@ function sendQuickreply(recipientId) {
 
 //Functions for searching the database.
 // This one searches appliances
-function searchAppliance(itemname, event) {
+async function searchAppliance(itemname) {
+  let resMessage = null;
+  let success = false;
   console.log(`----------> Item to search for :${itemname}`);
-  axios({
+  const req = await axios({
     method: "POST",
     url: "https://us-central1-luk-fi-it-chatbot.cloudfunctions.net/lukfiit",
     headers: {},
@@ -282,20 +290,25 @@ function searchAppliance(itemname, event) {
       actionn: "checkitemappliance",
       item: itemname,
     },
-  })
-    .then((res) => {
-      //Here is where you'd send the result (res) as a message to the user. The result is already in the appropriate format
-      //ie. the result is in this format:
-      //res {
-      //messages: [ {text: 'Nutribullet 12 PC🔌 \n' +'\n' +  '📌 You can find it at this location:123 Constant Spring Rd\n' +  '\n' +  ' 💵 Cost:10,500 JMD'  } ]
-      //}
-      console.log("res", res.data);
-      sendMessage(event.sender.id, res.data);
-    })
-    .catch((err) => {
-      console.log("error in request", err);
-    });
-  return;
+  });
+  const res = await req;
+  resMessage = res.data.messages[0];
+  success = res.data.success;
+
+  return { resMessage, success };
+  //   .then((res) => {
+  //     //Here is where you'd send the result (res) as a message to the user. The result is already in the appropriate format
+  //     //ie. the result is in this format:
+  //     //res {
+  //     //messages: [ {text: 'Nutribullet 12 PC🔌 \n' +'\n' +  '📌 You can find it at this location:123 Constant Spring Rd\n' +  '\n' +  ' 💵 Cost:10,500 JMD'  } ]
+  //     //}
+  //     console.log("res", res.data);
+  //     sendMessage(event.sender.id, res.data);
+  //   })
+  //   .catch((err) => {
+  //     console.log("error in request", err);
+  //   });
+  // return;
 }
 
 // This one searches food
@@ -330,9 +343,11 @@ async function searchFood(itemname) {
 }
 
 // This one searches clothes.
-function searchClothes(itemname, event) {
+async function searchClothes(itemname) {
+  let resMessage = null;
+  let success = false;
   console.log(`----------> Item to search for :${itemname}`);
-  axios({
+  const req = await axios({
     method: "POST",
     url: "https://us-central1-luk-fi-it-chatbot.cloudfunctions.net/lukfiit",
     headers: {},
@@ -340,16 +355,21 @@ function searchClothes(itemname, event) {
       actionn: "checkitemclothes",
       item: itemname,
     },
-  })
-    .then((res) => {
-      //Here is where you'd send the result (res) as a message to the user. The result is already in the appropriate format
-      console.log("res", res.data);
-      sendMessage(event.sender.id, res.data);
-    })
-    .catch((err) => {
-      console.log("error in request", err);
-    });
-  return;
+  });
+  const res = await req;
+  resMessage = res.data.messages[0];
+  success = res.data.success;
+
+  return { resMessage, success };
+  //   .then((res) => {
+  //     //Here is where you'd send the result (res) as a message to the user. The result is already in the appropriate format
+  //     console.log("res", res.data);
+  //     sendMessage(event.sender.id, res.data);
+  //   })
+  //   .catch((err) => {
+  //     console.log("error in request", err);
+  //   });
+  // return;
 }
 
 //Seach for ids and return the current state
