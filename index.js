@@ -159,9 +159,9 @@ const handleMessageEvent = async (event) => {
     case "food_search":
       console.log("<--- Search food in Handle message case --->");
       addID(userID, "database_food");
-      const { message, success } = searchFood(itemName);
+      const { resMessage, success } = searchFood(itemName);
       if (success) {
-        sendMessage(userID, message);
+        sendMessage(userID, resMessage);
       }
       //consider handling quick reply in search function
       //sendQuickreply(userID, message);
