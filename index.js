@@ -354,7 +354,12 @@ function searchids(uid) {
   })
     .then((res) => {
       console.log("THIS IS THE SEARCH ID FUNCTION:");
-      console.log(res)
+      if(res.data == "User ID not found"){
+        console.log(`NOT FOUND -> ${res.data}`);
+        addID(uid,'get_started');
+      }else{
+        console.log(`FOUND -> ${res.data}`)
+      }
     })
     .catch((err) => {
       console.log("error in request", err);
@@ -364,7 +369,7 @@ function searchids(uid) {
 
 
 //Add or update an id with the current state
-function addids(uid,cs) {
+function addID(uid,cs) {
   console.log(`----------> ID to add :${uid}`);
   axios({
     method: "POST",
