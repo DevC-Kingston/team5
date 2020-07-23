@@ -82,7 +82,7 @@ const handlePostbackEvent = async (event) => {
     case "delivery":
       addID(userID, payload);
       let location = locationReply();
-      quickReply(userID, location);
+      sendQuickreply(userID, location);
       break;
 
     case "pickup":
