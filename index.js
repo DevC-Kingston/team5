@@ -299,11 +299,11 @@ function searchAppliance(itemname, event) {
 }
 
 // This one searches food
-function searchFood(itemname) {
+async function searchFood(itemname) {
   let resMessage = null;
   let success = false;
   console.log(`----------> Item to search for :${itemname}`);
-  axios({
+  const req = await axios({
     method: "POST",
     url: "https://us-central1-luk-fi-it-chatbot.cloudfunctions.net/lukfiit",
     headers: {},
@@ -311,17 +311,22 @@ function searchFood(itemname) {
       actionn: "checkitemfood",
       item: itemname,
     },
-  })
-    .then((res) => {
-      resMessage = res.data.messages[0];
-      success = res.data.success;
-      return { resMessage, success };
-    })
-    .catch((err) => {
-      console.log("error in searchFood function -->", err);
-      return { resMessage, success };
-    });
+  });
+  const res = await req;
+  resMessage = res.data.messages[0];
+  success = res.data.success;
+
   return { resMessage, success };
+  //     .then((res) => {
+  //       resMessage = res.data.messages[0];
+  //       success = res.data.success;
+  //       return { resMessage, success };
+  //     })
+  //     .catch((err) => {
+  //       console.log("error in searchFood function -->", err);
+  //       return { resMessage, success };
+  //     });
+  //   return { resMessage, success };
 }
 
 // This one searches clothes.
