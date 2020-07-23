@@ -161,9 +161,11 @@ const handleMessageEvent = async (event) => {
     case "food_search":
       console.log("<--- Search food in Handle message case --->");
       addID(userID, "database_food");
-      const { resMessage: foodMsg, success } = await searchFood(itemName);
-      console.log("SUCCESS ---> ", success);
-      if (success) {
+      const { resMessage: foodMsg, success: foodSuccess } = await searchFood(
+        itemName
+      );
+      console.log("SUCCESS ---> ", foodSuccess);
+      if (foodSuccess) {
         sendMessage(userID, foodMsg);
       }
       //consider handling quick reply in search function
@@ -173,9 +175,12 @@ const handleMessageEvent = async (event) => {
     case "machine_search":
       console.log("<--- machine_search in Handle message case --->");
       addID(userID, "database_machine");
-      const { resMessage: machineMsg, success } = await searchAppliance(itemName);
-      console.log("SUCCESS ---> ", success);
-      if (success){
+      const {
+        resMessage: machineMsg,
+        success: machSuccess,
+      } = await searchAppliance(itemName);
+      console.log("SUCCESS ---> ", machSuccess);
+      if (success) {
         sendMessage(userID, machineMsg);
       }
       //sendQuickreply(userID, message);
