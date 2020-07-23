@@ -363,7 +363,7 @@ function searchids(uid) {
     .catch((err) => {
       console.log("error in request", err);
     });
-  return;
+  return res.data;
 }
 
 
