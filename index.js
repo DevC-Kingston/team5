@@ -161,12 +161,14 @@ const handleMessageEvent = async (event) => {
     case "food_search":
       console.log("<--- Search food in Handle message case --->");
       addID(userID, "database_food");
-      const { resMessage: foodMsg, success: foodSuccess } = await searchFood(
+      const { product: foodProduct, success: foodSuccess } = await searchFood(
         itemName
       );
       console.log("SUCCESS ---> ", foodSuccess);
       if (foodSuccess) {
-        sendMessage(userID, foodMsg);
+        sendMessage(userID, {
+          text: `${itemName} was found for ${product.cost}`,
+        });
       }
       //consider handling quick reply in search function
       //sendQuickreply(userID, message);
@@ -318,7 +320,7 @@ async function searchAppliance(itemname) {
 
 // This one searches food
 async function searchFood(itemname) {
-  let resMessage = null;
+  let product = null;
   let success = false;
   console.log(`----------> Item to search for :${itemname}`);
   const req = await axios({
@@ -331,10 +333,10 @@ async function searchFood(itemname) {
     },
   });
   const res = await req;
-  resMessage = res.data.messages[0];
+  product = res.data.product;
   success = res.data.success;
 
-  return { resMessage, success };
+  return { product, success };
   //     .then((res) => {
   //       resMessage = res.data.messages[0];
   //       success = res.data.success;
