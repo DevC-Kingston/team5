@@ -64,7 +64,8 @@ app.post("/webhook", (req, res) => {
       if (webhook_event.postback) {
         let payload = await handlePostbackEvent(webhook_event);
       }
-
+      console.log(`Hook Received -> ${payload}`)
+      
       if (webhook_event.message && webhook_event.message.text) {
         handleMessageEvent(webhook_event, payload);
       }
@@ -157,7 +158,7 @@ const handleMessageEvent = async (event, payload) => {
   //fetch userid from database based on userID
   //read the users currentState
   //switch statement with current state
-
+  console.log(`FROM HANDLE MESSAGE -> ${payload}`)
   switch (payload) {
     case "food_search":
       currentState = "database_food";
