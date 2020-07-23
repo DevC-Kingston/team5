@@ -235,10 +235,13 @@ const handleMessageEvent = async (event) => {
       break;
 
     default:
-      addID(userID, "get_started");
-      sendMessage(userID, { text: "I couldn't understand your request" });
-      message = get_started(first_name);
-      return sendMessage(userID, message);
+      payload = await searchids(userID);
+      if (!(payload === "delivery" || payload === "pickup")) {
+        addID(userID, "get_started");
+        sendMessage(userID, { text: "I couldn't understand your request" });
+        message = get_started(first_name);
+        return sendMessage(userID, message);
+      }
   }
 
   return;
