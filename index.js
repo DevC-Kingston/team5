@@ -161,13 +161,13 @@ const handleMessageEvent = async (event) => {
     case "food_search":
       console.log("<--- Search food in Handle message case --->");
       addID(userID, "database_food");
-      const { product: foodProduct, success: foodSuccess } = await searchFood(
-        itemName
+      const { food, success: foodSuccess } = await searchFood(
+        itemName.toLowerCase()
       );
       console.log("SUCCESS ---> ", foodSuccess);
       if (foodSuccess) {
         sendMessage(userID, {
-          text: `${itemName} was found for ${foodProduct.cost}`,
+          text: `${itemName} was found for ${food.cost}`,
         });
       }
       //consider handling quick reply in search function
@@ -177,13 +177,13 @@ const handleMessageEvent = async (event) => {
     case "machine_search":
       console.log("<--- machine_search in Handle message case --->");
       addID(userID, "database_machine");
-      const {
-        resMessage: machineMsg,
-        success: machSuccess,
-      } = await searchAppliance(itemName);
-      console.log("SUCCESS ---> ", machSuccess);
-      if (success) {
-        sendMessage(userID, machineMsg);
+      const { appliance, success: machSuccess } = await searchAppliance(
+        itemName
+      );
+      if (machSuccess) {
+        sendMessage(userID, {
+          text: `${itemName} was found for ${appliance.cost}`,
+        });
       }
       //sendQuickreply(userID, message);
       break;
@@ -191,10 +191,12 @@ const handleMessageEvent = async (event) => {
     case "fashion_search":
       console.log("<--- fashion_search in Handle message case --->");
       addID(userID, "database_fashion");
-      const { resMessage: fashionMsg, success } = await searchClothes(itemName);
+      const { clothes, success } = await searchClothes(itemName);
       console.log("SUCCESS ---> ", success);
       if (success) {
-        sendMessage(userID, fashionMsg);
+        sendMessage(userID, {
+          text: `${itemName} was found for ${clothes.cost}`,
+        });
       }
       //sendQuickreply(recipientId);
       break;
@@ -286,7 +288,7 @@ function sendQuickreply(recipientId) {
 //Functions for searching the database.
 // This one searches appliances
 async function searchAppliance(itemname) {
-  let resMessage = null;
+  let appliance = null;
   let success = false;
   console.log(`----------> Item to search for :${itemname}`);
   const req = await axios({
@@ -299,28 +301,15 @@ async function searchAppliance(itemname) {
     },
   });
   const res = await req;
-  resMessage = res.data.messages[0];
+  appliance = res.data.product;
   success = res.data.success;
 
-  return { resMessage, success };
-  //   .then((res) => {
-  //     //Here is where you'd send the result (res) as a message to the user. The result is already in the appropriate format
-  //     //ie. the result is in this format:
-  //     //res {
-  //     //messages: [ {text: 'Nutribullet 12 PC🔌 \n' +'\n' +  '📌 You can find it at this location:123 Constant Spring Rd\n' +  '\n' +  ' 💵 Cost:10,500 JMD'  } ]
-  //     //}
-  //     console.log("res", res.data);
-  //     sendMessage(event.sender.id, res.data);
-  //   })
-  //   .catch((err) => {
-  //     console.log("error in request", err);
-  //   });
-  // return;
+  return { appliance, success };
 }
 
 // This one searches food
 async function searchFood(itemname) {
-  let product = null;
+  let food = null;
   let success = false;
   console.log(`----------> Item to search for :${itemname}`);
   const req = await axios({
@@ -333,25 +322,15 @@ async function searchFood(itemname) {
     },
   });
   const res = await req;
-  product = res.data.product;
+  food = res.data.product;
   success = res.data.success;
 
-  return { product, success };
-  //     .then((res) => {
-  //       resMessage = res.data.messages[0];
-  //       success = res.data.success;
-  //       return { resMessage, success };
-  //     })
-  //     .catch((err) => {
-  //       console.log("error in searchFood function -->", err);
-  //       return { resMessage, success };
-  //     });
-  //   return { resMessage, success };
+  return { food, success };
 }
 
 // This one searches clothes.
 async function searchClothes(itemname) {
-  let resMessage = null;
+  let clothes = null;
   let success = false;
   console.log(`----------> Item to search for :${itemname}`);
   const req = await axios({
@@ -364,19 +343,10 @@ async function searchClothes(itemname) {
     },
   });
   const res = await req;
-  resMessage = res.data.messages[0];
+  clothes = res.data.product;
   success = res.data.success;
 
   return { resMessage, success };
-  //   .then((res) => {
-  //     //Here is where you'd send the result (res) as a message to the user. The result is already in the appropriate format
-  //     console.log("res", res.data);
-  //     sendMessage(event.sender.id, res.data);
-  //   })
-  //   .catch((err) => {
-  //     console.log("error in request", err);
-  //   });
-  // return;
 }
 
 //Seach for ids and return the current state
@@ -394,21 +364,6 @@ async function searchids(uid) {
   const data = await res.data;
 
   return data;
-  //   .then((res) => {
-  //     console.log("THIS IS THE SEARCH ID FUNCTION:");
-  //     if (res.data == "User ID not found") {
-  //       console.log(`NOT FOUND -> ${res.data}`);
-  //       return addID(uid, "get_started");
-  //     } else {
-  //       console.log(`FOUND -> ${res.data}`);
-  //       return res.data;
-  //     }
-  //   })
-  //   .catch((err) => {
-  //     console.log("error in request -->", err.headers);
-  //   });
-
-  // return;
 }
 
 //Add or update an id with the current state
