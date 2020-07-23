@@ -61,16 +61,16 @@ app.post("/webhook", (req, res) => {
 
       await searchids(webhook_event.sender.id);
 
-      if (webhook_event.postback) {
-        handlePostbackEvent(webhook_event);
-      }
-
       if (webhook_event.message && webhook_event.message.text) {
         handleMessageEvent(webhook_event);
       }
 
       if (webhook_event.message && webhook_event.message.quick_reply) {
         handleQuickReply(webhook_event);
+      }
+
+      if (webhook_event.postback) {
+        handlePostbackEvent(webhook_event);
       }
     });
 
