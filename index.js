@@ -210,9 +210,11 @@ const handleMessageEvent = async (messageEvent, userId) => {
         if (success) {
           sendMessage(userId, {
             text: `${itemName} was found for ${clothes.cost}`,
+          }).then(() => {
+            let deliveryMessage = await deliveryReply();
+            sendQuickreply(userId, deliveryMessage);
           });
-          let deliveryMessage = await deliveryReply();
-          sendQuickreply(userId, deliveryMessage);
+          
         }
         //sendQuickreply(recipientId);
         break;
