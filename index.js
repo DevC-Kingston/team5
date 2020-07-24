@@ -177,11 +177,13 @@ const handleMessageEvent = async (messageEvent, userId) => {
         const { food, success: foodSuccess } = await searchFood(itemName);
         console.log("SUCCESS ---> ", foodSuccess);
         if (foodSuccess) {
-          sendMessage(userId, {
+          return sendMessage(userId, {
             text: `${itemName} was found for ${food.cost}`,
-          });
-          let deliveryMessage = deliveryReply();
-          sendQuickreply(userId, deliveryMessage);
+          }).then(() => {
+            let deliveryMessage = deliveryReply();
+          return sendQuickreply(userId, deliveryMessage);
+          })
+          
         }
         break;
 
@@ -195,9 +197,11 @@ const handleMessageEvent = async (messageEvent, userId) => {
         if (macSuccess) {
           sendMessage(userId, {
             text: `${itemName} was found for ${appliance.cost}`,
-          });
-          let deliveryMessage = deliveryReply();
-          sendQuickreply(userId, deliveryMessage);
+          }).then(() =>{
+            let deliveryMessage = deliveryReply();
+          return sendQuickreply(userId, deliveryMessage);
+          })
+          
         }
         //sendQuickreply(userId, message);
         break;
@@ -212,7 +216,7 @@ const handleMessageEvent = async (messageEvent, userId) => {
             text: `${itemName} was found for ${clothes.cost}`,
           }).then(() => {
             let deliveryMessage = await deliveryReply();
-            sendQuickreply(userId, deliveryMessage);
+            return sendQuickreply(userId, deliveryMessage);
           });
           
         }
