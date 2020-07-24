@@ -25,7 +25,7 @@ Tech Stack & Documentation:
 
 ## Challenges we ran into
 1. linkning the google cloud platform to allow the user to upload images using the vision api. This caused use issued with image quality when user tried to view the retrieved images.
-2. Linking the database of choice "firebase" to our chatbot so we could pool the inventory from the different vendors that would be registered with us and run the queries that would pull the item the user is looking for. 
+2. Linking the database of choice "firebase" to our chatbot so we could pool the inventory from the different vendors that would be registered with us and run the queries that would pull the item the user is looking for this also resulted in issue with viewing the address. 
  
  
 ## Accomplishments that we're proud of
