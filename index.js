@@ -282,6 +282,7 @@ const handleMessageEvent = async (messageEvent, userId) => {
         }).then(() => {
           // addID(userId, "get_started");
           return database.find({ userId }, function (err, doc) {
+            console.log("DOCUMENT --->", doc);
             return sendMessage(userId, {
               text: `Please pick up item at ${doc.location}`,
             });
