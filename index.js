@@ -5,6 +5,7 @@ const { get_started } = require("./src/templates/postbacks");
 const { deliveryReply, locationReply } = require("./src/templates/quickReply");
 const { sendQuickreply } = require("./src/send-api/quick-reply");
 const { sendMessage } = require("./src/send-api/send-message");
+const { database } = require("./config");
 
 const app = express();
 
@@ -155,7 +156,6 @@ const handlePostbackEvent = async (event) => {
 const handleMessageEvent = async (messageEvent, userId) => {
   console.log("Message received Event");
   const { first_name } = await getUserPersonalInfo(userId);
-  let userItemSearched = "";
 
   const greeting = firstTrait(messageEvent.nlp, "wit$greetings");
 
@@ -176,7 +176,22 @@ const handleMessageEvent = async (messageEvent, userId) => {
         console.log("<--- Search food in Handle message case --->");
         addID(userId, "database_food");
         const { food, success: foodSuccess } = await searchFood(itemName);
-        userItemSearched = food;
+
+        database.find({ userId }, function (err, doc) {
+          if (!doc) {
+            database.insert({
+              userId,
+              location: food.location,
+              itemName: food.itemname,
+            });
+          } else {
+            database.update(
+              { userId },
+              { location: food.location, itemName: food.itemname }
+            );
+          }
+        });
+
         console.log("foodSuccess TYPE---> ", typeof foodSuccess);
         console.log("foodSuccess ---> ", foodSuccess);
         if (foodSuccess === "true") {
@@ -265,10 +280,13 @@ const handleMessageEvent = async (messageEvent, userId) => {
         return sendMessage(userId, {
           text: `😥 Sorry I'm still young ${first_name}, but I promise this feature is coming soon. 👉👈`,
         }).then(() => {
-          return sendMessage(userId, get_started());
+          // addID(userId, "get_started");
+          return database.find({ userId }, function (err, doc) {
+            return sendMessage(userId, {
+              text: `Please pick up item at ${doc.location}`,
+            });
+          });
         });
-
-        break;
 
       case "pickup":
         addID(userId, payload);
