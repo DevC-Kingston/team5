@@ -263,10 +263,7 @@ const handleMessageEvent = async (messageEvent, userId) => {
       case "delivery":
         addID(userId, "pickup");
         return sendMessage(userId, {
-          text: `😥 Sorry I'm still young ${first_name}, 
-            but I promise this feature is coming soon.
-                          👉👈
-          `,
+          text: `😥 Sorry I'm still young ${first_name}, but I promise this feature is coming soon. 👉👈`,
         }).then(() => {
           return sendMessage(userId, {
             text: `${userItemSearched} userItemSearched`,
