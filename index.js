@@ -81,20 +81,20 @@ app.post("/webhook", (req, res) => {
 
 const handleQuickReply = async (event) => {
   console.log("EVENT QUICK REPLY", event);
-  let userID = event.sender.id;
+  let userId = event.sender.id;
   let payload = event.message.quick_reply.payload;
-  const { first_name } = await getUserPersonalInfo(userID);
+  const { first_name } = await getUserPersonalInfo(userId);
 
   switch (payload) {
     case "delivery":
-      addID(userID, payload);
+      addID(userId, payload);
       let location = await locationReply();
-      sendQuickreply(userID, location);
+      sendQuickreply(userId, location);
       break;
 
     case "pickup":
-      addID(userID, payload);
-      sendMessage(userID, { text: "location of item should go here" });
+      addID(userId, payload);
+      sendMessage(userId, { text: "location of item should go here" });
       break;
 
     default:
@@ -105,43 +105,43 @@ const handleQuickReply = async (event) => {
 };
 
 const handlePostbackEvent = async (event) => {
-  let userID = event.sender.id;
+  let userId = event.sender.id;
   let payload = event.postback.payload;
-  const { first_name } = await getUserPersonalInfo(userID);
+  const { first_name } = await getUserPersonalInfo(userId);
 
   switch (payload) {
     case "get_started":
-      addID(userID, payload);
+      addID(userId, payload);
       message = get_started(first_name);
-      sendMessage(userID, message);
+      sendMessage(userId, message);
       console.log("GET STARTED EVENT");
       break;
 
     case "food_search":
-      addID(userID, payload);
+      addID(userId, payload);
       message = {
         text:
           "Please enter the name of the food or ingredient you are searching for",
       };
-      sendMessage(userID, message);
+      sendMessage(userId, message);
       break;
 
     case "machine_search":
-      addID(userID, payload);
+      addID(userId, payload);
       message = {
         text:
           "Please enter the name of the appliance or machinery you are searching for",
       };
-      sendMessage(userID, message);
+      sendMessage(userId, message);
       break;
 
     case "fashion_search":
-      addID(userID, payload);
+      addID(userId, payload);
       message = {
         text:
           "Please enter the name of the clothing item you are searching for",
       };
-      sendMessage(userID, message);
+      sendMessage(userId, message);
       //maybe accept a picture for this and search similar options?
       break;
 
@@ -159,12 +159,12 @@ const handleMessageEvent = async (messageEvent, userId) => {
   const greeting = firstTrait(messageEvent.nlp, "wit$greetings");
 
   if (greeting && greeting.confidence) {
-    addID(userID, "get_started");
+    addID(userId, "get_started");
     message = get_started(first_name);
-    return sendMessage(userID, message);
+    return sendMessage(userId, message);
   }
 
-  let payload = await searchids(userID);
+  let payload = await searchids(userId);
 
   /**Handle all text event here */
   if (messageEvent.text) {
@@ -173,57 +173,57 @@ const handleMessageEvent = async (messageEvent, userId) => {
     switch (payload) {
       case "food_search":
         console.log("<--- Search food in Handle message case --->");
-        addID(userID, "database_food");
+        addID(userId, "database_food");
         const { food, success: foodSuccess } = await searchFood(itemName);
         console.log("SUCCESS ---> ", foodSuccess);
         if (foodSuccess) {
-          sendMessage(userID, {
+          sendMessage(userId, {
             text: `${itemName} was found for ${food.cost}`,
           });
           let deliveryMessage = deliveryReply();
-          sendQuickreply(userID, deliveryMessage);
+          sendQuickreply(userId, deliveryMessage);
         }
         break;
 
       case "machine_search":
         console.log("<--- machine_search in Handle message case --->");
-        addID(userID, "database_machine");
+        addID(userId, "database_machine");
         const { appliance, success: macSuccess } = await searchAppliance(
           itemName
         );
         console.log("SUCCESS ---> ", macSuccess);
         if (macSuccess) {
-          sendMessage(userID, {
+          sendMessage(userId, {
             text: `${itemName} was found for ${appliance.cost}`,
           });
           let deliveryMessage = deliveryReply();
-          sendQuickreply(userID, deliveryMessage);
+          sendQuickreply(userId, deliveryMessage);
         }
-        //sendQuickreply(userID, message);
+        //sendQuickreply(userId, message);
         break;
 
       case "fashion_search":
         console.log("<--- fashion_search in Handle message case --->");
-        addID(userID, "database_fashion");
+        addID(userId, "database_fashion");
         const { clothes, success } = await searchClothes(itemName);
         console.log("SUCCESS ---> ", success);
         if (success) {
-          sendMessage(userID, {
+          sendMessage(userId, {
             text: `${itemName} was found for ${clothes.cost}`,
           });
           let deliveryMessage = await deliveryReply();
-          sendQuickreply(userID, deliveryMessage);
+          sendQuickreply(userId, deliveryMessage);
         }
         //sendQuickreply(recipientId);
         break;
 
       default:
-        payload = await searchids(userID);
+        payload = await searchids(userId);
         if (!(payload === "delivery" || payload === "pickup")) {
-          addID(userID, "get_started");
-          sendMessage(userID, { text: "I couldn't understand your request" });
+          addID(userId, "get_started");
+          sendMessage(userId, { text: "I couldn't understand your request" });
           message = get_started(first_name);
-          return sendMessage(userID, message);
+          return sendMessage(userId, message);
         }
     }
 
