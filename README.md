@@ -18,7 +18,8 @@ This Chatbot idea proposed to reduce the number of places that we have to visit 
 
 ## How we built it
 Tech Stack & Documentation:
-*Chatbot - We created a chatbot for Facebook messenger with node.js and firebase to host the database and integrated Wit.ai to aid with NLP. This was done while utilizing the Facebook GraphAPI to communicate to users on a facebook page.
+
+* Chatbot - We created a chatbot for Facebook messenger with node.js and firebase to host the database and integrated Wit.ai to aid with NLP. This was done while utilizing the Facebook GraphAPI to communicate to users on a facebook page.
 
 
 ## Challenges we ran into
