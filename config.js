@@ -1,5 +1,10 @@
 var Datastore = require("nedb");
-const database = new Datastore("database.db");
+const path = require("path");
+
+const database = new Datastore({
+  filename: path.join(__dirname, "./database.db"),
+  autoload: true,
+});
 database.loadDatabase();
 
 module.exports = { database };
