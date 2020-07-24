@@ -27,5 +27,5 @@ exports.locationReply = () => {
     ],
   };
 
-  return message;
+  return Promise.resolve(message);
 };
