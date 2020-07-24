@@ -181,9 +181,8 @@ const handleMessageEvent = async (messageEvent, userId) => {
             text: `${itemName} was found for ${food.cost}`,
           }).then(() => {
             let deliveryMessage = deliveryReply();
-          return sendQuickreply(userId, deliveryMessage);
-          })
-          
+            return sendQuickreply(userId, deliveryMessage);
+          });
         }
         break;
 
@@ -197,11 +196,10 @@ const handleMessageEvent = async (messageEvent, userId) => {
         if (macSuccess) {
           sendMessage(userId, {
             text: `${itemName} was found for ${appliance.cost}`,
-          }).then(() =>{
+          }).then(() => {
             let deliveryMessage = deliveryReply();
-          return sendQuickreply(userId, deliveryMessage);
-          })
-          
+            return sendQuickreply(userId, deliveryMessage);
+          });
         }
         //sendQuickreply(userId, message);
         break;
@@ -215,10 +213,9 @@ const handleMessageEvent = async (messageEvent, userId) => {
           sendMessage(userId, {
             text: `${itemName} was found for ${clothes.cost}`,
           }).then(() => {
-            let deliveryMessage = await deliveryReply();
+            let deliveryMessage = deliveryReply();
             return sendQuickreply(userId, deliveryMessage);
           });
-          
         }
         //sendQuickreply(recipientId);
         break;
