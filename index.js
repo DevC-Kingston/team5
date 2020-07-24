@@ -167,7 +167,7 @@ const handleMessageEvent = async (messageEvent, userId) => {
   let payload = await searchids(userId);
 
   /**Handle all text event here */
-  if (messageEvent.text) {
+  if (messageEvent.text && !messageEvent.quick_reply) {
     let itemName = messageEvent.text;
 
     switch (payload) {
