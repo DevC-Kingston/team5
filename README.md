@@ -1,8 +1,5 @@
 # Luk fi it
 
-[//]: <> (Please use this Winning Hackathon Application as an example:
-https://devpost.com/software/rewise-ai-powered-revision-bot)
-
 **Team Members**: Kimberly Marsden, Shamar Webster, Jamie James, Sonneil Wellington, Khamali Powell
 
 ## Inspiration
@@ -10,44 +7,52 @@ Here in Jamaica, you can ask anyone about the manner in which they usually go ab
 
 
 ## What it does
-Luk Fi It : was proposed to reduce the number of places that we visit, by locating a particular product for the user and providing them the location of all stores that carry that item.
-
+This Chatbot idea proposed to reduce the number of places that we have to visit in order to locate a product. To solve this, we locate the items of the users by integrating with stores that carry them and then provide the user with the information about the item and the location(s) if they wish to collect the item. We also collect their address so that the item can be delivered if desired.
 
 ## List your Chatbot’s features and use cases
-1. LOOKING : luk fi it would provide users with direction and location to the product they are searching for
-2. Display : an image of the product once its found is sent to the user for confirmation of match to what the user is looking for
+1. **Looking for items** - We link people with product from the comfort of home
+
+2. **Display** - We give details on the product and the location of the item if they wish to pickup
 
 
 ## How we built it
 Tech Stack & Documentation:
-*Chatbot - We created the chatbot using FB messenger with node js and channeled to Facebook messenger utilizing Facebook GraphAPI.We integrated Wit.ai as our NLP and product entity training programmatically from the dashboard.
+*Chatbot - We created a chatbot for Facebook messenger with node.js and firebase to host the database and integrated Wit.ai to aid with NLP. This was done while utilizing the Facebook GraphAPI to communicate to users on a facebook page.
 
 
 ## Challenges we ran into
-1. linkning the google cloud platform to allow the user to upload images using the vision api. This caused use issued with image quality when user tried to view the retrieved images.
-2. Linking the database of choice "firebase" to our chatbot so we could pool the inventory from the different vendors that would be registered with us and run the queries that would pull the item the user is looking for. 
+1. While linking the google cloud platform to allow the user to parse user uploaded images using the vision API there was an issue with possibly the image compression resulting in the images being too low quality when to be analyzed when tested.
+
+2. Linking the database of choice "firebase" to our chatbot so we could pool the inventory from the different vendors that would be registered with us and run the queries that would pull the item the user is looking for this also resulted in issues with viewing the address.
  
  
 ## Accomplishments that we're proud of
-* We are proud of joining our first project to the bootcamp for the first time. We have no experience before and we learned as we went along, we have combined all our individual traits and knowledge areas to come together to develop this using some of the most recent and advanced software development tools, services, and frameworks out there to create a platform with an impact in to.
-
-
+We are proud of joining our first project to the boot camp for the first time. We have no experience before and we learned as we went along, we have combined all our individual traits and knowledge areas to come together to develop this using some of the most recent and advanced software development tools, services, and frameworks out there to create a platform with an impact into.
 
 ## What we learned
-* Be patient and that with perserverance we can over come any errors during code
+* To be patient with each other as each individual has their strengths and can contribute something even if it's not the code as this challenge is about more than that.
+
+* We have learned presentations skills and best practices, how to develop an idea from concept to a business and how to pitch that idea in to convince others of its potential to solve a problem
+
 * We have learned about the complexity in databasing. We have done research on how to effectively use databases as well as Messenger API to improve or bot's functionality.
+
 
 
 ## What's next for “Luk fi it”
 Product Roadmap - next features for example
-1. iteration for getting product-market fit
-2. allow user to give audio in put and purchase items through the chatbot 
+1. Iteration for getting product-market fit
+2. Allowing users to use audio input to purchase items through the chatbot
+3. Adding an OCR to allow users to take pictures of their shopping lists
 
 
-## Built With - provide the tech stack used 
-* node.js, firebase 
+## Built With - provide the tech stack used
+* Node.js
+* Firebase
+* Heroku
 
 
 ## Try it out
-[Add link to Public GitHub Page] https://github.com/DevC-Kingston/team5 </br>
- [Add link to GitHub Page] https://devc-kingston.github.io/team5/
+https://github.com/DevC-Kingston/team5
+https://devc-kingston.github.io/team5/
+
+
