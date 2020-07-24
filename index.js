@@ -3,6 +3,8 @@ const bodyParser = require("body-parser");
 const axios = require("axios");
 const { get_started } = require("./src/templates/postbacks");
 const { deliveryReply, locationReply } = require("./src/templates/quickReply");
+const { sendQuickreply } = require("./src/send-api/quick-reply");
+const { sendMessage } = require("./src/send-api/send-message");
 
 const app = express();
 
@@ -45,7 +47,6 @@ let message;
 // Creates the endpoint for our webhook
 app.post("/webhook", (req, res) => {
   let body = req.body;
-  let payload;
   // Checks this is an event from a page subscription
   if (body.object === "page") {
     // Iterates over each entry - there may be multiple if batched
@@ -54,16 +55,17 @@ app.post("/webhook", (req, res) => {
 
       // Gets the message.entry.messaging is an array, but will only contain one message, hence index 0
       let webhook_event = entry.messaging[0];
+      let sender_psid = webhook_event.sender.id;
 
-      await searchids(webhook_event.sender.id);
+      await searchids(sender_psid);
 
-      if (webhook_event.message && webhook_event.message.text) {
-        handleMessageEvent(webhook_event);
+      if (webhook_event.message) {
+        handleMessageEvent(webhook_event.message, sender_psid);
       }
 
-      if (webhook_event.message && webhook_event.message.quick_reply) {
-        handleQuickReply(webhook_event);
-      }
+      // if (webhook_event.message && webhook_event.message.quick_reply) {
+      //   handleQuickReply(webhook_event);
+      // }
 
       if (webhook_event.postback) {
         handlePostbackEvent(webhook_event);
@@ -150,77 +152,86 @@ const handlePostbackEvent = async (event) => {
   return;
 };
 
-const handleMessageEvent = async (event) => {
+const handleMessageEvent = async (messageEvent, userId) => {
   console.log("Message received Event");
-  let userID = event.sender.id;
-  const { first_name } = await getUserPersonalInfo(userID);
-  const greeting = firstTrait(event.message.nlp, "wit$greetings");
-  let itemName = event.message.text; //user message containing item ordered
+  const { first_name } = await getUserPersonalInfo(userId);
 
-  console.log("EVENT --> ", event.message.nlp);
+  const greeting = firstTrait(messageEvent.nlp, "wit$greetings");
 
   if (greeting && greeting.confidence) {
     addID(userID, "get_started");
     message = get_started(first_name);
     return sendMessage(userID, message);
   }
+
   let payload = await searchids(userID);
 
-  switch (payload) {
-    case "food_search":
-      console.log("<--- Search food in Handle message case --->");
-      addID(userID, "database_food");
-      const { food, success: foodSuccess } = await searchFood(itemName);
-      console.log("SUCCESS ---> ", foodSuccess);
-      if (foodSuccess) {
-        sendMessage(userID, {
-          text: `${itemName} was found for ${food.cost}`,
-        });
-        let deliveryMessage = await deliveryReply();
-        sendQuickreply(userID, deliveryMessage);
-      }
-      break;
+  /**Handle all text event here */
+  if (messageEvent.text) {
+    let itemName = messageEvent.text;
 
-    case "machine_search":
-      console.log("<--- machine_search in Handle message case --->");
-      addID(userID, "database_machine");
-      const { appliance, success: macSuccess } = await searchAppliance(
-        itemName
-      );
-      console.log("SUCCESS ---> ", macSuccess);
-      if (macSuccess) {
-        sendMessage(userID, {
-          text: `${itemName} was found for ${appliance.cost}`,
-        });
-        let deliveryMessage = await deliveryReply();
-        sendQuickreply(userID, deliveryMessage);
-      }
-      //sendQuickreply(userID, message);
-      break;
+    switch (payload) {
+      case "food_search":
+        console.log("<--- Search food in Handle message case --->");
+        addID(userID, "database_food");
+        const { food, success: foodSuccess } = await searchFood(itemName);
+        console.log("SUCCESS ---> ", foodSuccess);
+        if (foodSuccess) {
+          sendMessage(userID, {
+            text: `${itemName} was found for ${food.cost}`,
+          });
+          let deliveryMessage = deliveryReply();
+          sendQuickreply(userID, deliveryMessage);
+        }
+        break;
 
-    case "fashion_search":
-      console.log("<--- fashion_search in Handle message case --->");
-      addID(userID, "database_fashion");
-      const { clothes, success } = await searchClothes(itemName);
-      console.log("SUCCESS ---> ", success);
-      if (success) {
-        sendMessage(userID, {
-          text: `${itemName} was found for ${clothes.cost}`,
-        });
-        let deliveryMessage = await deliveryReply();
-        sendQuickreply(userID, deliveryMessage);
-      }
-      //sendQuickreply(recipientId);
-      break;
+      case "machine_search":
+        console.log("<--- machine_search in Handle message case --->");
+        addID(userID, "database_machine");
+        const { appliance, success: macSuccess } = await searchAppliance(
+          itemName
+        );
+        console.log("SUCCESS ---> ", macSuccess);
+        if (macSuccess) {
+          sendMessage(userID, {
+            text: `${itemName} was found for ${appliance.cost}`,
+          });
+          let deliveryMessage = deliveryReply();
+          sendQuickreply(userID, deliveryMessage);
+        }
+        //sendQuickreply(userID, message);
+        break;
 
-    default:
-      payload = await searchids(userID);
-      if (!(payload === "delivery" || payload === "pickup")) {
-        addID(userID, "get_started");
-        sendMessage(userID, { text: "I couldn't understand your request" });
-        message = get_started(first_name);
-        return sendMessage(userID, message);
-      }
+      case "fashion_search":
+        console.log("<--- fashion_search in Handle message case --->");
+        addID(userID, "database_fashion");
+        const { clothes, success } = await searchClothes(itemName);
+        console.log("SUCCESS ---> ", success);
+        if (success) {
+          sendMessage(userID, {
+            text: `${itemName} was found for ${clothes.cost}`,
+          });
+          let deliveryMessage = await deliveryReply();
+          sendQuickreply(userID, deliveryMessage);
+        }
+        //sendQuickreply(recipientId);
+        break;
+
+      default:
+        payload = await searchids(userID);
+        if (!(payload === "delivery" || payload === "pickup")) {
+          addID(userID, "get_started");
+          sendMessage(userID, { text: "I couldn't understand your request" });
+          message = get_started(first_name);
+          return sendMessage(userID, message);
+        }
+    }
+
+    return;
+  } else if (messageEvent.quick_reply) {
+    /**Handle quick reply */
+
+    return;
   }
 
   return;
@@ -232,58 +243,6 @@ async function getUserPersonalInfo(recipientId) {
   );
   const { first_name, last_name } = response.data;
   return { first_name, last_name };
-}
-
-// generic function sending messages
-function sendMessage(recipientId, message) {
-  try {
-    axios.post(
-      "https://graph.facebook.com/v7.0/me/messages",
-      {
-        recipient: { id: recipientId },
-        message: message,
-      },
-      {
-        params: { access_token: process.env.ACCESS_TOKEN },
-      },
-      (err) => {
-        if (err) {
-          console.log("Error sending message: ", err);
-        }
-      }
-    );
-  } catch (error) {
-    console.log("#####  ERROR SENDING MESSAGE  #####");
-    console.log(error.response.status);
-  }
-
-  return;
-}
-
-function sendQuickreply(recipientId, message) {
-  try {
-    axios.post(
-      "https://graph.facebook.com/v7.0/me/messages",
-      {
-        recipient: { id: recipientId },
-        messaging_type: "RESPONSE",
-        message: message,
-      },
-      {
-        params: { access_token: process.env.ACCESS_TOKEN },
-      },
-      (err) => {
-        if (err) {
-          console.log("Error sending message: ", err);
-        }
-      }
-    );
-  } catch (error) {
-    console.log("#####  ERROR SENDING MESSAGE  #####");
-    console.log(error.response.status);
-  }
-
-  return;
 }
 
 //Functions for searching the database.

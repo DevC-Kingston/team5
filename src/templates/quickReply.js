@@ -14,8 +14,7 @@ exports.deliveryReply = () => {
       },
     ],
   };
-
-  return Promise.resolve(message);
+  return message;
 };
 
 exports.locationReply = () => {
@@ -28,5 +27,5 @@ exports.locationReply = () => {
     ],
   };
 
-  return Promise.resolve(message);
+  return message;
 };
