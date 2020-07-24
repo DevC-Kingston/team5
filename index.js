@@ -177,7 +177,7 @@ const handleMessageEvent = async (messageEvent, userId) => {
         const { food, success: foodSuccess } = await searchFood(itemName);
         console.log("foodSuccess TYPE---> ", typeof foodSuccess);
         console.log("foodSuccess ---> ", foodSuccess);
-        if (foodSuccess) {
+        if (foodSuccess === "true") {
           return sendMessage(userId, {
             text: `${itemName} was found for ${food.cost}`,
           }).then(() => {
