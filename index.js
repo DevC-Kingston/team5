@@ -234,7 +234,7 @@ const handleMessageEvent = async (messageEvent, userId) => {
 
       default:
         console.log("-------------------");
-        console.table(messageEvent);
+        console.log("messageEvent ", messageEvent);
         console.log("DEFAULT IN messageEvent.text SWITCH");
         console.log("-------------------");
       // payload = await searchids(userId);
