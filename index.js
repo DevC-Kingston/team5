@@ -254,6 +254,7 @@ const handleMessageEvent = async (messageEvent, userId) => {
     let payload = messageEvent.quick_reply.payload;
 
     console.log("Payload in quick reply ", payload);
+    console.log("userId in quick reply ", userId);
 
     switch (payload) {
       case "delivery":
