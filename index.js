@@ -248,6 +248,7 @@ const handleMessageEvent = async (messageEvent, userId) => {
 
     return;
   } else if (messageEvent.quick_reply) {
+    console.log("TOUCH DOWN IN QUICK REPLY");
     /**Handle quick reply */
     const { first_name } = await getUserPersonalInfo(userId);
     let payload = messageEvent.quick_reply.payload;
