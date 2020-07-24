@@ -260,7 +260,7 @@ const handleMessageEvent = async (messageEvent, userId) => {
     switch (payload) {
       case "delivery":
         addID(userId, payload);
-        let location = await locationReply();
+        let location = locationReply();
         sendQuickreply(userId, location);
         break;
 
