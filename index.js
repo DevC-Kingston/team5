@@ -254,13 +254,11 @@ const handleMessageEvent = async (messageEvent, userId) => {
         console.log("messageEvent ", messageEvent);
         console.log("DEFAULT IN messageEvent.text SWITCH");
         console.log("-------------------");
-      // payload = await searchids(userId);
-      // if (!(payload === "delivery" || payload === "pickup")) {
-      //   addID(userId, "get_started");
-      //   sendMessage(userId, { text: "I couldn't understand your request" });
-      //   message = get_started(first_name);
-      //   return sendMessage(userId, message);
-      // }
+
+        addID(userId, "get_started");
+        sendMessage(userId, { text: "I couldn't understand your request" });
+        message = get_started(first_name);
+        return sendMessage(userId, message);
     }
 
     return;
