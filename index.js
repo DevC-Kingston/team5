@@ -183,6 +183,10 @@ const handleMessageEvent = async (messageEvent, userId) => {
             let deliveryMessage = deliveryReply();
             return sendQuickreply(userId, deliveryMessage);
           });
+        } else {
+          return sendMessage(userId, {
+            text: `${itemName} was not found`,
+          });
         }
         break;
 
@@ -200,6 +204,10 @@ const handleMessageEvent = async (messageEvent, userId) => {
             let deliveryMessage = deliveryReply();
             return sendQuickreply(userId, deliveryMessage);
           });
+        } else {
+          sendMessage(userId, {
+            text: `${itemName} was not found`,
+          });
         }
         //sendQuickreply(userId, message);
         break;
@@ -215,6 +223,10 @@ const handleMessageEvent = async (messageEvent, userId) => {
           }).then(() => {
             let deliveryMessage = deliveryReply();
             return sendQuickreply(userId, deliveryMessage);
+          });
+        } else {
+          sendMessage(userId, {
+            text: `${itemName} was not found`,
           });
         }
         //sendQuickreply(recipientId);
