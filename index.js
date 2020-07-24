@@ -177,24 +177,26 @@ const handleMessageEvent = async (messageEvent, userId) => {
         addID(userId, "database_food");
         const { food, success: foodSuccess } = await searchFood(itemName);
 
-        database.find({ userId }, function (err, doc) {
-          if (!doc) {
-            database.insert({
-              userId,
-              location: food.location,
-              itemName: food.itemname,
-            });
-          } else {
-            database.update(
-              { userId },
-              { location: food.location, itemName: food.itemname }
-            );
-          }
-        });
-
         console.log("foodSuccess TYPE---> ", typeof foodSuccess);
         console.log("foodSuccess ---> ", foodSuccess);
         if (foodSuccess === "true") {
+          /**====================== DATABASE================================= */
+          database.find({ userId }, function (err, doc) {
+            if (!doc) {
+              database.insert({
+                userId,
+                location: food.location,
+                itemName: food.itemname,
+              });
+            } else {
+              database.update(
+                { userId },
+                { location: food.location, itemName: food.itemname }
+              );
+            }
+          });
+          /**======================================================= */
+
           return sendMessage(userId, {
             text: `${itemName} was found for ${food.cost}`,
           }).then(() => {
@@ -214,40 +216,36 @@ const handleMessageEvent = async (messageEvent, userId) => {
           itemName
         );
         console.log("SUCCESS ---> ", macSuccess);
-        if (macSuccess) {
-          sendMessage(userId, {
+        if (macSuccess === "true") {
+          return sendMessage(userId, {
             text: `${itemName} was found for ${appliance.cost}`,
           }).then(() => {
             let deliveryMessage = deliveryReply();
             return sendQuickreply(userId, deliveryMessage);
           });
         } else {
-          sendMessage(userId, {
+          return sendMessage(userId, {
             text: `${itemName} was not found`,
           });
         }
-        //sendQuickreply(userId, message);
-        break;
 
       case "fashion_search":
         console.log("<--- fashion_search in Handle message case --->");
         addID(userId, "database_fashion");
         const { clothes, success } = await searchClothes(itemName);
         console.log("SUCCESS ---> ", success);
-        if (success) {
-          sendMessage(userId, {
+        if (success === "true") {
+          return sendMessage(userId, {
             text: `${itemName} was found for ${clothes.cost}`,
           }).then(() => {
             let deliveryMessage = deliveryReply();
             return sendQuickreply(userId, deliveryMessage);
           });
         } else {
-          sendMessage(userId, {
+          return sendMessage(userId, {
             text: `${itemName} was not found`,
           });
         }
-        //sendQuickreply(recipientId);
-        break;
 
       default:
         console.log("-------------------");
@@ -260,8 +258,6 @@ const handleMessageEvent = async (messageEvent, userId) => {
         message = get_started(first_name);
         return sendMessage(userId, message);
     }
-
-    return;
   } else if (messageEvent.quick_reply) {
     console.log("TOUCH DOWN IN QUICK REPLY");
     /**Handle quick reply */
