@@ -277,15 +277,20 @@ const handleMessageEvent = async (messageEvent, userId) => {
           // addID(userId, "get_started");
           return database.find({ userId }, function (err, doc) {
             console.log("DOCUMENT --->", doc);
+            // return sendMessage(userId, {
+            //   text: `Please pick up item at ${doc.location}`,
+            // });
             return sendMessage(userId, {
-              text: `Please pick up item at ${doc.location}`,
+              text: `Please pick up item at 12 Kings House, Kingston 6`,
             });
           });
         });
 
       case "pickup":
         addID(userId, payload);
-        sendMessage(userId, { text: "location of item should go here" });
+        sendMessage(userId, {
+          text: `Please pick up item at 12 Kings House, Kingston 6`,
+        });
         break;
 
       default:
