@@ -265,13 +265,9 @@ const handleMessageEvent = async (messageEvent, userId) => {
         return sendMessage(userId, {
           text: `😥 Sorry I'm still young ${first_name}, but I promise this feature is coming soon. 👉👈`,
         }).then(() => {
-          return sendMessage(userId, {
-            text: `${userItemSearched} userItemSearched`,
-          });
+          return sendMessage(userId, get_started());
         });
 
-        let location = locationReply();
-        sendQuickreply(userId, location);
         break;
 
       case "pickup":
