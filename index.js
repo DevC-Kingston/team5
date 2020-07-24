@@ -253,6 +253,8 @@ const handleMessageEvent = async (messageEvent, userId) => {
     const { first_name } = await getUserPersonalInfo(userId);
     let payload = messageEvent.quick_reply.payload;
 
+    console.log("Payload in quick reply ", payload);
+
     switch (payload) {
       case "delivery":
         addID(userId, payload);
