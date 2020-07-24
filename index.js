@@ -189,7 +189,6 @@ const handleMessageEvent = async (messageEvent, userId) => {
             text: `${itemName} was not found`,
           });
         }
-        break;
 
       case "machine_search":
         console.log("<--- machine_search in Handle message case --->");
@@ -234,20 +233,42 @@ const handleMessageEvent = async (messageEvent, userId) => {
         break;
 
       default:
-        payload = await searchids(userId);
-        if (!(payload === "delivery" || payload === "pickup")) {
-          addID(userId, "get_started");
-          sendMessage(userId, { text: "I couldn't understand your request" });
-          message = get_started(first_name);
-          return sendMessage(userId, message);
-        }
+        console.log("-------------------");
+        console.log("DEFAULT IN messageEvent.text SWITCH");
+        console.log("-------------------");
+      // payload = await searchids(userId);
+      // if (!(payload === "delivery" || payload === "pickup")) {
+      //   addID(userId, "get_started");
+      //   sendMessage(userId, { text: "I couldn't understand your request" });
+      //   message = get_started(first_name);
+      //   return sendMessage(userId, message);
+      // }
     }
 
     return;
   } else if (messageEvent.quick_reply) {
     /**Handle quick reply */
+    const { first_name } = await getUserPersonalInfo(userId);
+    let payload = messageEvent.quick_reply.payload;
 
-    return;
+    switch (payload) {
+      case "delivery":
+        addID(userId, payload);
+        let location = await locationReply();
+        sendQuickreply(userId, location);
+        break;
+
+      case "pickup":
+        addID(userId, payload);
+        sendMessage(userId, { text: "location of item should go here" });
+        break;
+
+      default:
+        console.log("-------------------");
+        console.log("DEFAULT IN messageEvent.quick_reply SWITCH");
+        console.log("-------------------");
+      /**@todo do something here */
+    }
   }
 
   return;
