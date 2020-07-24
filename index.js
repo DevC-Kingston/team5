@@ -55,10 +55,6 @@ app.post("/webhook", (req, res) => {
       // Gets the message.entry.messaging is an array, but will only contain one message, hence index 0
       let webhook_event = entry.messaging[0];
 
-      console.log("------------------------------------------------------");
-      console.log("ENTIRE MESSAE ", webhook_event);
-      console.log("------------------------------------------------------");
-
       await searchids(webhook_event.sender.id);
 
       if (webhook_event.message && webhook_event.message.text) {
@@ -120,7 +116,6 @@ const handlePostbackEvent = async (event) => {
       break;
 
     case "food_search":
-      console.log("<--- Search food POSTBACK case --->");
       addID(userID, payload);
       message = {
         text:
@@ -130,8 +125,6 @@ const handlePostbackEvent = async (event) => {
       break;
 
     case "machine_search":
-      console.log("<--- machine Search food POSTBACK case --->");
-
       addID(userID, payload);
       message = {
         text:
@@ -141,7 +134,6 @@ const handlePostbackEvent = async (event) => {
       break;
 
     case "fashion_search":
-      console.log("<--- fashion_search POSTBACK case --->");
       addID(userID, payload);
       message = {
         text:
@@ -160,15 +152,9 @@ const handlePostbackEvent = async (event) => {
 
 const handleMessageEvent = async (event) => {
   console.log("Message received Event");
-
-  // searchAppliance(event.message.text,event);
-  // searchClothes(event.message.text,event);
-  // searchFood(event.message.text,event);
   let userID = event.sender.id;
   const { first_name } = await getUserPersonalInfo(userID);
   const greeting = firstTrait(event.message.nlp, "wit$greetings");
-  // const thanks = firstTrait(event.message.nlp, "wit$thanks");
-  // const bye = firstTrait(event.message.nlp, "wit$bye");
   let itemName = event.message.text; //user message containing item ordered
 
   console.log("EVENT --> ", event.message.nlp);
@@ -178,12 +164,7 @@ const handleMessageEvent = async (event) => {
     message = get_started(first_name);
     return sendMessage(userID, message);
   }
-  console.log("-------------------------------------------------");
   let payload = await searchids(userID);
-  console.log("payload", payload);
-  console.log("-------------------------------------------------");
-
-  // console.log(`FROM HANDLE MESSAGE -> ${payload}`);
 
   switch (payload) {
     case "food_search":
@@ -198,8 +179,6 @@ const handleMessageEvent = async (event) => {
         let deliveryMessage = await deliveryReply();
         sendQuickreply(userID, deliveryMessage);
       }
-      //consider handling quick reply in search function
-      //sendQuickreply(userID, message);
       break;
 
     case "machine_search":
