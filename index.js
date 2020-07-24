@@ -282,14 +282,22 @@ const handleMessageEvent = async (messageEvent, userId) => {
             // });
             return sendMessage(userId, {
               text: `Please pick up item at 12 Kings House, Kingston 6`,
+            }).then(() => {
+              return sendMessage(userId, {
+                text: `Thank you for your time, type 'hi' to start a new conversation`,
+              });
             });
           });
         });
 
       case "pickup":
         addID(userId, payload);
-        sendMessage(userId, {
+        return sendMessage(userId, {
           text: `Please pick up item at 12 Kings House, Kingston 6`,
+        }).then(() => {
+          return sendMessage(userId, {
+            text: `Thank you for your time, type 'hi' to start a new conversation`,
+          });
         });
         break;
 
