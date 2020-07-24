@@ -155,6 +155,7 @@ const handlePostbackEvent = async (event) => {
 const handleMessageEvent = async (messageEvent, userId) => {
   console.log("Message received Event");
   const { first_name } = await getUserPersonalInfo(userId);
+  let userItemSearched = "";
 
   const greeting = firstTrait(messageEvent.nlp, "wit$greetings");
 
@@ -175,6 +176,7 @@ const handleMessageEvent = async (messageEvent, userId) => {
         console.log("<--- Search food in Handle message case --->");
         addID(userId, "database_food");
         const { food, success: foodSuccess } = await searchFood(itemName);
+        userItemSearched = food;
         console.log("foodSuccess TYPE---> ", typeof foodSuccess);
         console.log("foodSuccess ---> ", foodSuccess);
         if (foodSuccess === "true") {
@@ -259,8 +261,19 @@ const handleMessageEvent = async (messageEvent, userId) => {
 
     switch (payload) {
       case "delivery":
-        addID(userId, payload);
-        let location = await locationReply();
+        addID(userId, "pickup");
+        return sendMessage(userId, {
+          text: `😥 Sorry I'm still young ${first_name}, 
+            but I promise this feature is coming soon.
+                          👉👈
+          `,
+        }).then(() => {
+          return sendMessage(userId, {
+            text: `${userItemSearched} userItemSearched`,
+          });
+        });
+
+        let location = locationReply();
         sendQuickreply(userId, location);
         break;
 

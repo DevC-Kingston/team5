@@ -18,25 +18,14 @@ exports.deliveryReply = () => {
 };
 
 exports.locationReply = () => {
-  // message = {
-  //   text: "Please share location:",
-  //   quick_replies: [
-  //     {
-  //       content_type: "location",
-  //     },
-  //   ],
-  // };
-
   message = {
-    text: "Please Select one of the following:",
+    text: "Please share location:",
     quick_replies: [
       {
-        content_type: "text",
-        title: "Something",
-        payload: "Something",
+        content_type: "location",
       },
     ],
   };
 
-  return Promise.resolve(message);
+  return message;
 };
